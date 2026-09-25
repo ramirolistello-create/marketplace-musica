@@ -1,8 +1,13 @@
+var URL_SUPABASE =
+    "https://zyyvjbtsldxehaulgmgt.supabase.co";
+
 var URL_ALBUMES =
-    "https://zyyvjbtsldxehaulgmgt.supabase.co/rest/v1/albumes?select=id,titulo,descripcion,precio,portada_url,artista_id,perfiles(nombre)";
+    URL_SUPABASE +
+    "/rest/v1/albumes?select=id,titulo,descripcion,precio,portada_url,artista_id,perfiles(nombre)";
 
 var URL_PERFILES =
-    "https://zyyvjbtsldxehaulgmgt.supabase.co/rest/v1/perfiles?select=id,nombre,tipo,usuario_id";
+    URL_SUPABASE +
+    "/rest/v1/perfiles?select=id,nombre,tipo,usuario_id";
 
 var KEY_SUPABASE =
     "sb_publishable_KtoC3FL-i8Dr9eiVdcfE-g_3UZQyHBI";
@@ -56,6 +61,7 @@ solicitud.addEventListener(
             );
 
             return;
+
         }
 
 
@@ -84,6 +90,7 @@ solicitud.addEventListener(
             );
 
             return;
+
         }
 
 
@@ -126,10 +133,16 @@ solicitud.addEventListener(
                 "album-card";
 
 
+            /* ============================= */
+            /* DATOS BÁSICOS DE LA TARJETA */
+            /* ============================= */
+
             tarjeta.innerHTML =
 
                 "<img src='" +
                 album.portada_url +
+                "' alt='" +
+                album.titulo +
                 "'>" +
 
                 "<h3>" +
@@ -141,22 +154,190 @@ solicitud.addEventListener(
                 "</p>" +
 
                 "<p>" +
-                album.descripcion +
+                (album.descripcion || "") +
                 "</p>" +
 
                 "<p class='precio'>$" +
                 album.precio +
                 "</p>" +
 
+                "<div class='preview-container'>" +
+                    "<p>Cargando preview...</p>" +
+                "</div>" +
+
                 "<a href='album.html?id=" +
                 album.id +
                 "' class='boton-comprar'>" +
-                "Comprar álbum" +
+                "Ver álbum" +
                 "</a>";
 
 
             contenedor.appendChild(
                 tarjeta
+            );
+
+
+            /* ============================= */
+            /* BUSCAR PREVIEW */
+            /* ============================= */
+
+            var urlCanciones =
+                URL_SUPABASE +
+                "/rest/v1/canciones" +
+                "?select=id,titulo,preview_path" +
+                "&album_id=eq." +
+                encodeURIComponent(
+                    album.id
+                );
+
+
+            fetch(
+                urlCanciones,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "apikey":
+                            KEY_SUPABASE,
+
+                        "Accept":
+                            "application/json"
+                    }
+                }
+            )
+
+            .then(
+                function(respuestaCanciones) {
+
+                    if (
+                        !respuestaCanciones.ok
+                    ) {
+
+                        throw new Error(
+                            "Error buscando preview"
+                        );
+
+                    }
+
+
+                    return respuestaCanciones.json();
+
+                }
+            )
+
+            .then(
+                function(canciones) {
+
+                    var previewContainer =
+                        tarjeta.querySelector(
+                            ".preview-container"
+                        );
+
+
+                    if (!previewContainer) {
+
+                        return;
+
+                    }
+
+
+                    /* ============================= */
+                    /* NO HAY CANCIONES */
+                    /* ============================= */
+
+                    if (
+                        !canciones ||
+                        canciones.length === 0
+                    ) {
+
+                        previewContainer.innerHTML =
+                            "";
+
+                        return;
+
+                    }
+
+
+                    var cancion =
+                        canciones[0];
+
+
+                    /* ============================= */
+                    /* NO HAY PREVIEW */
+                    /* ============================= */
+
+                    if (
+                        !cancion.preview_path
+                    ) {
+
+                        previewContainer.innerHTML =
+                            "<p>Preview no disponible</p>";
+
+                        return;
+
+                    }
+
+
+                    /* ============================= */
+                    /* URL PÚBLICA DEL MP3 */
+                    /* ============================= */
+
+                    var previewURL =
+                        URL_SUPABASE +
+                        "/storage/v1/object/public/previews/" +
+                        cancion.preview_path;
+
+
+                    /* ============================= */
+                    /* REPRODUCTOR */
+                    /* ============================= */
+
+                    previewContainer.innerHTML =
+
+                        "<p class='preview-titulo'>" +
+                        "Escuchar preview" +
+                        "</p>" +
+
+                        "<audio controls preload='metadata'>" +
+
+                            "<source src='" +
+                            previewURL +
+                            "' type='audio/mpeg'>" +
+
+                            "Tu navegador no soporta audio." +
+
+                        "</audio>" +
+
+                        "<small>Preview de 30 segundos</small>";
+
+                }
+            )
+
+            .catch(
+                function(error) {
+
+                    console.error(
+                        "ERROR PREVIEW:",
+                        error
+                    );
+
+
+                    var previewContainer =
+                        tarjeta.querySelector(
+                            ".preview-container"
+                        );
+
+
+                    if (
+                        previewContainer
+                    ) {
+
+                        previewContainer.innerHTML =
+                            "";
+
+                    }
+
+                }
             );
 
         }
@@ -183,6 +364,7 @@ solicitud.send();
 console.log(
     "SOLICITUD ENVIADA"
 );
+
 
 
 
@@ -279,6 +461,7 @@ if (
 
 
                         return;
+
                     }
 
 
@@ -408,6 +591,7 @@ if (
 
 
 
+
 /* ============================= */
 /* CONTADOR DEL CARRITO */
 /* ============================= */
@@ -444,11 +628,13 @@ function actualizarContadorCarrito() {
 
 
 
+
 /* ============================= */
 /* ACTUALIZAR AL CARGAR LA PÁGINA */
 /* ============================= */
 
 actualizarContadorCarrito();
+
 
 
 
