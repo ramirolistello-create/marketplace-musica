@@ -18,13 +18,9 @@ document.querySelector(
 "#contador-carrito"
 );
 
-/* ============================= */
-/* ACTUALIZAR CONTADOR */
-/* ============================= */
-
 function actualizarContador() {
 
-```
+
 if (!contador) {
     return;
 }
@@ -35,30 +31,22 @@ contador.textContent =
 
 }
 
-/* ============================= */
-/* GUARDAR CARRITO */
-/* ============================= */
-
 function guardarCarrito() {
 
-```
+
 localStorage.setItem(
     "carrito",
     JSON.stringify(carrito)
 );
 
 actualizarContador();
-```
+
 
 }
 
-/* ============================= */
-/* MOSTRAR CARRITO */
-/* ============================= */
-
 function mostrarCarrito() {
 
-```
+
 actualizarContador();
 
 if (carrito.length === 0) {
@@ -88,10 +76,6 @@ var total = 0;
 contenedor.innerHTML = "";
 
 
-/* ============================= */
-/* PRODUCTOS */
-/* ============================= */
-
 for (
     var i = 0;
     i < carrito.length;
@@ -101,19 +85,15 @@ for (
     var album =
         carrito[i];
 
-
     total =
         total +
         Number(album.precio);
 
-
     var producto =
         document.createElement("div");
 
-
     producto.className =
         "album-card";
-
 
     producto.innerHTML =
 
@@ -143,24 +123,17 @@ for (
 
         "</button>";
 
-
     contenedor.appendChild(
         producto
     );
 }
 
 
-/* ============================= */
-/* RESUMEN */
-/* ============================= */
-
 var resumen =
     document.createElement("div");
 
-
 resumen.className =
     "resumen-carrito";
-
 
 resumen.innerHTML =
 
@@ -173,15 +146,10 @@ resumen.innerHTML =
     "Continuar al pago" +
     "</button>";
 
-
 contenedor.appendChild(
     resumen
 );
 
-
-/* ============================= */
-/* BOTONES ELIMINAR */
-/* ============================= */
 
 var botonesEliminar =
     document.querySelectorAll(
@@ -207,10 +175,8 @@ for (
                         )
                     );
 
-
                 var nuevoCarrito =
                     [];
-
 
                 for (
                     var k = 0;
@@ -228,10 +194,8 @@ for (
                     }
                 }
 
-
                 carrito =
                     nuevoCarrito;
-
 
                 guardarCarrito();
 
@@ -242,15 +206,10 @@ for (
 }
 
 
-/* ============================= */
-/* IR AL CHECKOUT */
-/* ============================= */
-
 var botonPagar =
     document.querySelector(
         "#boton-pagar"
     );
-
 
 botonPagar.addEventListener(
     "click",
@@ -261,12 +220,8 @@ botonPagar.addEventListener(
 
     }
 );
-```
+
 
 }
-
-/* ============================= */
-/* INICIAR */
-/* ============================= */
 
 mostrarCarrito();
