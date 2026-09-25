@@ -1,48 +1,64 @@
-/* ============================= */
-/* CONTADOR DEL CARRITO */
-/* ============================= */
+var URL_ALBUMES =
+    "https://zyyvjbtsldxehaulgmgt.supabase.co/rest/v1/albumes?select=id,titulo,descripcion,precio,portada_url,artista_id,perfiles(nombre)";
 
-function actualizarContadorCarrito() {
+var URL_PERFILES =
+    "https://zyyvjbtsldxehaulgmgt.supabase.co/rest/v1/perfiles?select=id,nombre,tipo,usuario_id";
 
-
-var contador =
-    document.querySelector(
-        "#contador-carrito"
-    );
-
-if (!contador) {
-    return;
-}
-
-var carrito =
-    JSON.parse(
-        localStorage.getItem("carrito")
-    ) || [];
-
-contador.textContent =
-    carrito.length;
+var KEY_SUPABASE =
+    "sb_publishable_KtoC3FL-i8Dr9eiVdcfE-g_3UZQyHBI";
 
 
-}
+console.log("INICIO");
+
+
 
 /* ============================= */
-/* ACTUALIZAR AL CARGAR LA PÁGINA */
+/* CARGAR ÁLBUMES */
 /* ============================= */
 
-actualizarContadorCarrito();
-
-/* ============================= */
-/* ACTUALIZAR SI CAMBIA EL CARRITO */
-/* ============================= */
-
-window.addEventListener(
-"storage",
-function() {
+var solicitud =
+    new XMLHttpRequest();
 
 
-    actualizarContadorCarrito();
-
-}
-
-
+solicitud.open(
+    "GET",
+    URL_ALBUMES,
+    true
 );
+
+
+solicitud.setRequestHeader(
+    "apikey",
+    KEY_SUPABASE
+);
+
+
+solicitud.addEventListener(
+    "load",
+    function() {
+
+        console.log(
+            "RESPUESTA RECIBIDA"
+        );
+
+        console.log(
+            solicitud.status
+        );
+
+
+        if (
+            solicitud.status !== 200
+        ) {
+
+            console.log(
+                "ERROR SUPABASE:",
+                solicitud.responseText
+            );
+
+            return;
+        }
+
+
+        var albumes =
+            JSON.parse
+
