@@ -1,112 +1,272 @@
 console.log("CARRITO.JS INICIADO");
 
-var carrito = JSON.parse(
-    localStorage.getItem("carrito")
+var carrito =
+JSON.parse(
+localStorage.getItem("carrito")
 ) || [];
 
-console.log("CARRITO GUARDADO:", carrito);
+console.log(
+"CARRITO GUARDADO:",
+carrito
+);
 
-var contenedor = document.querySelector("#carrito");
+var contenedor =
+document.querySelector("#carrito");
+
+var contador =
+document.querySelector(
+"#contador-carrito"
+);
+
+/* ============================= */
+/* ACTUALIZAR CONTADOR */
+/* ============================= */
+
+function actualizarContador() {
+
+```
+if (!contador) {
+    return;
+}
+
+contador.textContent =
+    carrito.length;
+```
+
+}
+
+/* ============================= */
+/* GUARDAR CARRITO */
+/* ============================= */
+
+function guardarCarrito() {
+
+```
+localStorage.setItem(
+    "carrito",
+    JSON.stringify(carrito)
+);
+
+actualizarContador();
+```
+
+}
+
+/* ============================= */
+/* MOSTRAR CARRITO */
+/* ============================= */
+
+function mostrarCarrito() {
+
+```
+actualizarContador();
 
 if (carrito.length === 0) {
 
     contenedor.innerHTML =
-        "<p>Tu carrito está vacío.</p>";
 
-} else {
+        "<div class='carrito-vacio'>" +
 
-    var total = 0;
+            "<h2>Tu carrito está vacío</h2>" +
 
-    contenedor.innerHTML = "";
+            "<p>" +
+            "Todavía no agregaste ningún álbum." +
+            "</p>" +
 
-    for (var i = 0; i < carrito.length; i++) {
+            "<a href='index.html'>" +
+            "Explorar álbumes" +
+            "</a>" +
 
-        var album = carrito[i];
+        "</div>";
 
-        total = total + Number(album.precio);
-
-        var producto = document.createElement("div");
-
-        producto.className = "album-card";
-
-        producto.innerHTML =
-
-            "<img src='" + album.portada_url + "'>" +
-
-            "<h3>" + album.titulo + "</h3>" +
-
-            "<p>Por: " + album.artista + "</p>" +
-
-            "<p class='precio'>$" + album.precio + "</p>" +
-
-            "<button class='boton-eliminar' data-id='" +
-            album.id +
-            "'>Eliminar</button>";
-
-        contenedor.appendChild(producto);
-    }
+    return;
+}
 
 
-    var resumen = document.createElement("div");
+var total = 0;
 
-    resumen.innerHTML =
-
-        "<h2>Total: $" + total + "</h2>" +
-
-        "<button id='boton-pagar'>Continuar al pago</button>";
-
-    contenedor.appendChild(resumen);
+contenedor.innerHTML = "";
 
 
-    var botonesEliminar =
-        document.querySelectorAll(".boton-eliminar");
+/* ============================= */
+/* PRODUCTOS */
+/* ============================= */
+
+for (
+    var i = 0;
+    i < carrito.length;
+    i++
+) {
+
+    var album =
+        carrito[i];
 
 
-    for (var j = 0; j < botonesEliminar.length; j++) {
+    total =
+        total +
+        Number(album.precio);
 
-        botonesEliminar[j].addEventListener(
+
+    var producto =
+        document.createElement("div");
+
+
+    producto.className =
+        "album-card";
+
+
+    producto.innerHTML =
+
+        "<img src='" +
+        album.portada_url +
+        "'>" +
+
+        "<h3>" +
+        album.titulo +
+        "</h3>" +
+
+        "<p>Por: " +
+        album.artista +
+        "</p>" +
+
+        "<p class='precio'>$" +
+        album.precio +
+        "</p>" +
+
+        "<button " +
+        "class='boton-eliminar' " +
+        "data-id='" +
+        album.id +
+        "'>" +
+
+        "🗑️ Eliminar" +
+
+        "</button>";
+
+
+    contenedor.appendChild(
+        producto
+    );
+}
+
+
+/* ============================= */
+/* RESUMEN */
+/* ============================= */
+
+var resumen =
+    document.createElement("div");
+
+
+resumen.className =
+    "resumen-carrito";
+
+
+resumen.innerHTML =
+
+    "<h2>" +
+    "Total: $" +
+    total +
+    "</h2>" +
+
+    "<button id='boton-pagar'>" +
+    "Continuar al pago" +
+    "</button>";
+
+
+contenedor.appendChild(
+    resumen
+);
+
+
+/* ============================= */
+/* BOTONES ELIMINAR */
+/* ============================= */
+
+var botonesEliminar =
+    document.querySelectorAll(
+        ".boton-eliminar"
+    );
+
+
+for (
+    var j = 0;
+    j < botonesEliminar.length;
+    j++
+) {
+
+    botonesEliminar[j]
+        .addEventListener(
             "click",
             function() {
 
-                var id = Number(
-                    this.getAttribute("data-id")
-                );
+                var id =
+                    Number(
+                        this.getAttribute(
+                            "data-id"
+                        )
+                    );
 
-                var nuevoCarrito = [];
 
-                for (var k = 0; k < carrito.length; k++) {
+                var nuevoCarrito =
+                    [];
 
-                    if (carrito[k].id !== id) {
 
-                        nuevoCarrito.push(carrito[k]);
+                for (
+                    var k = 0;
+                    k < carrito.length;
+                    k++
+                ) {
 
+                    if (
+                        carrito[k].id !== id
+                    ) {
+
+                        nuevoCarrito.push(
+                            carrito[k]
+                        );
                     }
                 }
 
-                localStorage.setItem(
-                    "carrito",
-                    JSON.stringify(nuevoCarrito)
-                );
 
-                location.reload();
+                carrito =
+                    nuevoCarrito;
+
+
+                guardarCarrito();
+
+                mostrarCarrito();
 
             }
         );
-    }
+}
 
 
-    var botonPagar =
-        document.querySelector("#boton-pagar");
+/* ============================= */
+/* IR AL CHECKOUT */
+/* ============================= */
 
-
-    botonPagar.addEventListener(
-        "click",
-        function() {
-
-            window.location.href =
-                "checkout.html";
-
-        }
+var botonPagar =
+    document.querySelector(
+        "#boton-pagar"
     );
 
+
+botonPagar.addEventListener(
+    "click",
+    function() {
+
+        window.location.href =
+            "checkout.html";
+
+    }
+);
+```
+
 }
+
+/* ============================= */
+/* INICIAR */
+/* ============================= */
+
+mostrarCarrito();
