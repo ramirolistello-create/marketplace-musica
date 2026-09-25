@@ -17,7 +17,6 @@ document.querySelector("#contador-carrito");
 
 function actualizarContador() {
 
-
 if (!contador) {
     return;
 }
@@ -25,11 +24,9 @@ if (!contador) {
 contador.textContent =
     carrito.length;
 
-
 }
 
 function guardarCarrito() {
-
 
 localStorage.setItem(
     "carrito",
@@ -38,11 +35,9 @@ localStorage.setItem(
 
 actualizarContador();
 
-
 }
 
 function mostrarCarrito() {
-
 
 actualizarContador();
 
@@ -207,7 +202,6 @@ botonPagar.addEventListener(
 
     }
 );
-
 
 }
 
