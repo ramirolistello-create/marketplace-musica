@@ -5,120 +5,147 @@
   }
 
 body {
-font-family: Arial, sans-serif;
-background: #f5f5f5;
-color: #222;
+font-family: Arial, Helvetica, sans-serif;
+background: #0d0d0f;
+color: #f2f2f2;
+line-height: 1.5;
 }
 
+/* ============================= */
 /* HEADER */
+/* ============================= */
 
 header {
 width: 100%;
-background: #111;
-color: white;
-padding: 20px 60px;
+background: #111114;
+border-bottom: 1px solid #242428;
+padding: 18px 50px;
 display: flex;
 justify-content: space-between;
 align-items: center;
+position: sticky;
+top: 0;
+z-index: 100;
 }
 
 .logo {
-font-size: 24px;
-font-weight: bold;
+font-size: 21px;
+font-weight: 700;
+letter-spacing: -0.5px;
 }
 
 nav {
 display: flex;
-gap: 25px;
+align-items: center;
+gap: 26px;
 }
 
 nav a {
-color: white;
+color: #bdbdc3;
 text-decoration: none;
+font-size: 14px;
+transition: color 0.2s ease;
 }
 
 nav a:hover {
-opacity: 0.7;
+color: white;
 }
 
 .login {
-font-weight: bold;
+color: white;
+font-weight: 600;
 }
 
-/* CARRITO */
+/* ============================= */
+/* CARRITO EN HEADER */
+/* ============================= */
 
 .carrito-link {
-font-weight: bold;
+display: flex;
+align-items: center;
+gap: 5px;
+color: white !important;
 }
 
 #contador-carrito {
 display: inline-flex;
 align-items: center;
 justify-content: center;
-min-width: 22px;
-height: 22px;
+min-width: 21px;
+height: 21px;
 padding: 0 6px;
-margin-left: 4px;
 background: white;
 color: #111;
 border-radius: 50px;
-font-size: 13px;
+font-size: 12px;
 font-weight: bold;
 }
 
+/* ============================= */
 /* HERO */
+/* ============================= */
 
 .hero {
-background: white;
-padding: 80px 20px;
+background:
+radial-gradient(
+circle at 50% 0%,
+#24242b 0%,
+#151519 35%,
+#0d0d0f 75%
+);
+
+
+padding: 110px 20px 100px;
 text-align: center;
+border-bottom: 1px solid #202024;
+
+
 }
 
 .hero h1 {
-max-width: 800px;
-margin: 0 auto 20px auto;
-font-size: 42px;
-line-height: 1.15;
+max-width: 850px;
+margin: 0 auto 22px;
+font-size: 48px;
+line-height: 1.08;
+letter-spacing: -1.5px;
 }
 
 .hero p {
 max-width: 650px;
-margin: 0 auto 30px auto;
-color: #666;
-font-size: 18px;
-line-height: 1.6;
+margin: 0 auto 35px;
+color: #9999a1;
+font-size: 17px;
 }
 
+/* ============================= */
 /* BUSCADOR */
+/* ============================= */
 
 .search {
 display: flex;
-justify-content: center;
-max-width: 600px;
+max-width: 620px;
 margin: auto;
 }
 
 .search input {
 flex: 1;
-padding: 14px;
-border: 1px solid #ccc;
-border-radius: 8px 0 0 8px;
-font-size: 16px;
+padding: 15px 18px;
+background: #19191d;
+border: 1px solid #303036;
+color: white;
+border-radius: 9px 0 0 9px;
+font-size: 15px;
+outline: none;
+}
+
+.search input:focus {
+border-color: #55555d;
+}
+
+.search input::placeholder {
+color: #77777f;
 }
 
 .search button {
-padding: 14px 25px;
-border: none;
-background: #111;
-color: white;
-border-radius: 0 8px 8px 0;
-cursor: pointer;
-}
-
-/* SECCIÓN ÁLBUMES */
-
-section {
-padding: 60px;
-}
-
-.section-title {
+padding: 15px 26px;
+bord
