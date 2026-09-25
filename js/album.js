@@ -85,6 +85,7 @@ if (!contenedor) {
             headers: headers
         }
     )
+
     .then(function (respuesta) {
 
         console.log(
@@ -94,6 +95,7 @@ if (!contenedor) {
 
 
         return respuesta.text()
+
             .then(function (texto) {
 
                 console.log(
@@ -119,6 +121,8 @@ if (!contenedor) {
             });
 
     })
+
+
     .then(function (texto) {
 
         var albumes;
@@ -197,156 +201,309 @@ if (!contenedor) {
         }
 
 
-        contenedor.innerHTML =
+        // =====================================================
+        // BUSCAR PREVIEW DEL ÁLBUM
+        // =====================================================
 
-            portadaHTML +
-
-            "<h1>" +
-            album.titulo +
-            "</h1>" +
-
-            "<h2>Por: " +
-            nombreArtista +
-            "</h2>" +
-
-            "<p>" +
-            (album.descripcion || "") +
-            "</p>" +
-
-            "<p>$" +
-            album.precio +
-            "</p>" +
-
-            "<button id='boton-comprar'>" +
-            "Agregar al carrito" +
-            "</button>";
+        var urlCanciones =
+            URL_SUPABASE +
+            "/rest/v1/canciones" +
+            "?select=id,titulo,preview_path" +
+            "&album_id=eq." +
+            encodeURIComponent(idAlbum);
 
 
-        var botonComprar =
-            document.querySelector(
-                "#boton-comprar"
+        console.log(
+            "BUSCANDO CANCIONES:",
+            urlCanciones
+        );
+
+
+        fetch(
+            urlCanciones,
+            {
+                method: "GET",
+                headers: headers
+            }
+        )
+
+        .then(function (respuestaCanciones) {
+
+            console.log(
+                "RESPUESTA CANCIONES:",
+                respuestaCanciones.status
             );
 
 
-        if (!botonComprar) {
+            return respuestaCanciones.json();
 
-            console.error(
-                "NO SE ENCONTRÓ #boton-comprar"
+        })
+
+
+        .then(function (canciones) {
+
+            console.log(
+                "CANCIONES:",
+                canciones
             );
 
-            return;
 
-        }
-
-
-        botonComprar.addEventListener(
-            "click",
-            function () {
-
-                var carrito;
+            var previewHTML =
+                "";
 
 
-                try {
+            // =================================================
+            // SI HAY UNA CANCIÓN CON PREVIEW
+            // =================================================
 
-                    carrito =
-                        JSON.parse(
-                            localStorage.getItem(
-                                "carrito"
-                            )
-                        ) || [];
+            if (
+                canciones &&
+                canciones.length > 0
+            ) {
 
-                } catch (error) {
+                var cancion =
+                    canciones[0];
 
-                    carrito = [];
+
+                if (
+                    cancion.preview_path
+                ) {
+
+                    var previewURL =
+                        URL_SUPABASE +
+                        "/storage/v1/object/public/previews/" +
+                        cancion.preview_path;
+
+
+                    previewHTML =
+
+                        "<div class='preview-player'>" +
+
+                            "<h3>Escuchar preview</h3>" +
+
+                            "<audio controls preload='metadata'>" +
+
+                                "<source src='" +
+                                previewURL +
+                                "' type='audio/mpeg'>" +
+
+                                "Tu navegador no soporta el reproductor de audio." +
+
+                            "</audio>" +
+
+                            "<p>Preview de 30 segundos</p>" +
+
+                        "</div>";
 
                 }
 
-
-                var producto = {
-
-                    id:
-                        album.id,
-
-                    titulo:
-                        album.titulo,
-
-                    precio:
-                        album.precio,
-
-                    portada_url:
-                        album.portada_url,
-
-                    artista:
-                        nombreArtista
-
-                };
+            }
 
 
-                var yaExiste =
-                    false;
+            // =================================================
+            // MOSTRAR ÁLBUM
+            // =================================================
+
+            contenedor.innerHTML =
+
+                portadaHTML +
+
+                "<h1>" +
+                album.titulo +
+                "</h1>" +
+
+                "<h2>Por: " +
+                nombreArtista +
+                "</h2>" +
+
+                "<p>" +
+                (album.descripcion || "") +
+                "</p>" +
+
+                previewHTML +
+
+                "<p>$" +
+                album.precio +
+                "</p>" +
+
+                "<button id='boton-comprar'>" +
+                "Agregar al carrito" +
+                "</button>";
 
 
-                for (
-                    var i = 0;
-                    i < carrito.length;
-                    i++
-                ) {
+            // =================================================
+            // BOTÓN COMPRAR
+            // =================================================
 
-                    if (
-                        carrito[i].id ===
-                        producto.id
+            var botonComprar =
+                document.querySelector(
+                    "#boton-comprar"
+                );
+
+
+            if (!botonComprar) {
+
+                console.error(
+                    "NO SE ENCONTRÓ #boton-comprar"
+                );
+
+                return;
+
+            }
+
+
+            botonComprar.addEventListener(
+                "click",
+
+                function () {
+
+                    var carrito;
+
+
+                    try {
+
+                        carrito =
+                            JSON.parse(
+                                localStorage.getItem(
+                                    "carrito"
+                                )
+                            ) || [];
+
+                    } catch (error) {
+
+                        carrito = [];
+
+                    }
+
+
+                    var producto = {
+
+                        id:
+                            album.id,
+
+                        titulo:
+                            album.titulo,
+
+                        precio:
+                            album.precio,
+
+                        portada_url:
+                            album.portada_url,
+
+                        artista:
+                            nombreArtista
+
+                    };
+
+
+                    var yaExiste =
+                        false;
+
+
+                    for (
+                        var i = 0;
+                        i < carrito.length;
+                        i++
                     ) {
 
-                        yaExiste =
-                            true;
+                        if (
+                            carrito[i].id ===
+                            producto.id
+                        ) {
 
-                        break;
+                            yaExiste =
+                                true;
+
+                            break;
+
+                        }
+
+                    }
+
+
+                    if (!yaExiste) {
+
+                        carrito.push(
+                            producto
+                        );
+
+
+                        localStorage.setItem(
+                            "carrito",
+
+                            JSON.stringify(
+                                carrito
+                            )
+                        );
+
+
+                        alert(
+                            "Álbum agregado al carrito."
+                        );
+
+
+                        window.location.href =
+                            "carrito.html";
+
+
+                    } else {
+
+                        alert(
+                            "Este álbum ya está en tu carrito."
+                        );
+
+
+                        window.location.href =
+                            "carrito.html";
 
                     }
 
                 }
 
+            );
 
-                if (!yaExiste) {
+        })
 
-                    carrito.push(
-                        producto
-                    );
+        .catch(function (errorCanciones) {
 
-
-                    localStorage.setItem(
-                        "carrito",
-                        JSON.stringify(
-                            carrito
-                        )
-                    );
+            console.error(
+                "ERROR AL CARGAR CANCIONES:",
+                errorCanciones
+            );
 
 
-                    alert(
-                        "Álbum agregado al carrito."
-                    );
+            // Aunque falle la búsqueda del preview,
+            // el álbum sigue apareciendo.
 
+            contenedor.innerHTML =
 
-                    window.location.href =
-                        "carrito.html";
+                portadaHTML +
 
+                "<h1>" +
+                album.titulo +
+                "</h1>" +
 
-                } else {
+                "<h2>Por: " +
+                nombreArtista +
+                "</h2>" +
 
-                    alert(
-                        "Este álbum ya está en tu carrito."
-                    );
+                "<p>" +
+                (album.descripcion || "") +
+                "</p>" +
 
+                "<p>$" +
+                album.precio +
+                "</p>" +
 
-                    window.location.href =
-                        "carrito.html";
+                "<button id='boton-comprar'>" +
+                "Agregar al carrito" +
+                "</button>";
 
-                }
-
-            }
-        );
+        });
 
     })
+
+
     .catch(function (error) {
 
         console.error(
