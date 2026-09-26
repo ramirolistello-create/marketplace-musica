@@ -1,159 +1,157 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
 
-    <meta charset="UTF-8">
+```
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>Mi biblioteca - Marketplace Música</title>
+<title>Mi biblioteca - Marketplace Música</title>
 
-    <link
-        rel="stylesheet"
-        href="css/style.css?v=8"
-    >
+<link
+    rel="stylesheet"
+    href="css/style.css?v=8"
+>
+```
 
 </head>
 
-
 <body>
-
 
 <header>
 
-    <div class="header-inner">
+```
+<div class="header-inner">
+
+
+    <a
+        href="./index.html"
+        class="logo"
+    >
+        Marketplace Música
+    </a>
+
+
+    <nav class="main-nav">
 
 
         <a
             href="./index.html"
-            class="logo"
+            class="nav-link"
         >
-            Marketplace Música
+            Inicio
         </a>
 
 
-        <nav class="main-nav">
+        <a
+            href="./album.html?id=1"
+            class="nav-link"
+        >
+            Álbumes
+        </a>
 
 
-            <a
-                href="./index.html"
-                class="nav-link"
-            >
-                Inicio
-            </a>
+        <a
+            href="./artistas.html"
+            class="nav-link"
+        >
+            Artistas
+        </a>
 
 
-            <a
-                href="./album.html?id=1"
-                class="nav-link"
-            >
-                Álbumes
-            </a>
+        <a
+            href="./biblioteca.html"
+            class="nav-link active"
+        >
+            Mi biblioteca
+        </a>
 
 
-            <a
-                href="./artistas.html"
-                class="nav-link"
-            >
-                Artistas
-            </a>
+    </nav>
 
 
-            <a
-                href="./biblioteca.html"
-                class="nav-link active"
-            >
-                Mi biblioteca
-            </a>
+    <div class="header-actions">
 
 
-        </nav>
+        <a
+            href="./carrito.html"
+            class="carrito-link"
+        >
+
+            <span class="cart-icon">
+                🛒
+            </span>
+
+            <span>
+                Carrito
+            </span>
+
+            <span id="contador-carrito">
+                0
+            </span>
+
+        </a>
 
 
-        <div class="header-actions">
-
-
-            <a
-                href="./carrito.html"
-                class="carrito-link"
-            >
-
-                <span class="cart-icon">
-                    🛒
-                </span>
-
-                <span>
-                    Carrito
-                </span>
-
-                <span id="contador-carrito">
-                    0
-                </span>
-
-            </a>
-
-
-            <a
-                href="./login.html"
-                class="login"
-                id="usuarioSesion"
-            >
-                Iniciar sesión
-            </a>
-
-
-        </div>
+        <a
+            href="./login.html"
+            class="login"
+            id="usuarioSesion"
+        >
+            Iniciar sesión
+        </a>
 
 
     </div>
 
+
+</div>
+```
+
 </header>
-
-
 
 <main>
 
-
-    <section>
-
-
-        <h1 class="section-title">
-            Mi biblioteca
-        </h1>
+```
+<section>
 
 
-        <div id="biblioteca">
-
-            <p>
-                Cargando tus compras...
-            </p>
-
-        </div>
+    <h1 class="section-title">
+        Mi biblioteca
+    </h1>
 
 
-    </section>
+    <div id="biblioteca">
 
+        <p>
+            Cargando tus compras...
+        </p>
+
+    </div>
+
+
+</section>
+```
 
 </main>
 
-
-
 <footer>
 
-    Marketplace Música — Música independiente.
+```
+Marketplace Música — Música independiente.
+```
 
 </footer>
-
-
 
 <script src="./js/biblioteca.js?v=1"></script>
 
 <script src="./js/app.js?v=1"></script>
-
 
 </body>
 
