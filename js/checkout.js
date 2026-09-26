@@ -1,296 +1,325 @@
-console.log("CHECKOUT.JS INICIADO");
+const URL_SUPABASE =
+"https://zyyvjbtsldxehaulgmgt.supabase.co";
 
-var carrito = JSON.parse(
-    localStorage.getItem("carrito")
-) || [];
+const KEY_SUPABASE =
+"sb_publishable_KtoC3FL-i8Dr9eiVdcfE-g_3UZQyHBI";
 
-var contenedor =
-    document.querySelector("#checkout");
+const checkout =
+document.getElementById("checkout");
 
-console.log(
-    "CARRITO:",
-    carrito
-);
+const carrito =
+JSON.parse(localStorage.getItem("carrito")) || [];
 
+const token =
+localStorage.getItem("access_token");
 
-/* ============================= */
-/* COMPROBAR SESIÓN */
-/* ============================= */
-
-var tokenUsuario =
-    localStorage.getItem("access_token");
-
-if (!tokenUsuario) {
-
-    contenedor.innerHTML =
-        "<p>Tenés que iniciar sesión para comprar.</p>" +
-        "<a href='login.html'>Iniciar sesión</a>";
-
-} else if (carrito.length === 0) {
-
-    contenedor.innerHTML =
-        "<p>No hay productos en tu carrito.</p>" +
-        "<a href='index.html'>Volver a la tienda</a>";
-
-} else {
-
-    var total = 0;
-
-    var contenido = "";
+if (!token) {
 
 
-    for (
-        var i = 0;
-        i < carrito.length;
-        i++
-    ) {
+checkout.innerHTML = `
+    <h2>Iniciá sesión</h2>
 
-        var album =
-            carrito[i];
+    <p>
+        Tenés que iniciar sesión para continuar con la compra.
+    </p>
 
-        total =
-            total +
-            Number(album.precio);
+    <a href="./login.html">
+        Iniciar sesión
+    </a>
+`;
 
-        contenido +=
 
-            "<div class='album-card'>" +
+}
 
-                "<img src='" +
-                album.portada_url +
-                "'>" +
+else if (carrito.length === 0) {
 
-                "<h3>" +
-                album.titulo +
-                "</h3>" +
 
-                "<p>Por: " +
-                album.artista +
-                "</p>" +
+checkout.innerHTML = `
+    <h2>Carrito vacío</h2>
 
-                "<p class='precio'>$" +
-                album.precio +
-                "</p>" +
+    <p>
+        No hay productos para comprar.
+    </p>
 
-            "</div>";
+    <a href="./albumes.html">
+        Ver álbumes
+    </a>
+`;
+
+
+}
+
+else {
+
+
+let total = 0;
+
+carrito.forEach(album => {
+
+    total += Number(album.precio);
+
+});
+
+
+const album = carrito[0];
+
+
+checkout.innerHTML = `
+
+    <h1>Checkout</h1>
+
+    <div class="album-card">
+
+        <img
+            src="${album.portada_url || "https://via.placeholder.com/300"}"
+            alt="${album.titulo}"
+        >
+
+        <h2>
+            ${album.titulo}
+        </h2>
+
+        <p>
+            Artista: ${album.artista || "Artista"}
+        </p>
+
+        <p class="precio">
+            $${total}
+        </p>
+
+    </div>
+
+
+    <h2>
+        Datos del comprador
+    </h2>
+
+
+    <input
+        type="text"
+        id="nombre"
+        placeholder="Nombre completo"
+    >
+
+
+    <input
+        type="email"
+        id="email"
+        placeholder="Correo electrónico"
+    >
+
+
+    <button id="boton-pagar">
+        Continuar al pago
+    </button>
+
+`;
+
+
+const boton =
+    document.getElementById("boton-pagar");
+
+
+boton.addEventListener("click", async () => {
+
+    const nombre =
+        document
+            .getElementById("nombre")
+            .value
+            .trim();
+
+
+    const email =
+        document
+            .getElementById("email")
+            .value
+            .trim();
+
+
+    if (!nombre) {
+
+        alert("Ingresá tu nombre.");
+
+        return;
+
     }
 
 
-    contenido +=
+    if (!email) {
 
-        "<h2>Total de la compra: $" +
-        total +
-        "</h2>" +
+        alert("Ingresá tu correo electrónico.");
 
-        "<h3>Datos del comprador</h3>" +
+        return;
 
-        "<input id='nombre' type='text' placeholder='Nombre completo'>" +
-
-        "<input id='email' type='email' placeholder='Correo electrónico'>" +
-
-        "<button id='boton-pagar'>" +
-        "Continuar al pago" +
-        "</button>";
+    }
 
 
-    contenedor.innerHTML =
-        contenido;
+    if (!email.includes("@")) {
+
+        alert("Ingresá un correo electrónico válido.");
+
+        return;
+
+    }
 
 
-    var botonPagar =
-        document.querySelector(
-            "#boton-pagar"
+    if (carrito.length !== 1) {
+
+        alert(
+            "Por ahora solo se puede comprar un álbum por vez."
+        );
+
+        return;
+
+    }
+
+
+    boton.disabled = true;
+
+    boton.textContent =
+        "Creando pago...";
+
+
+    try {
+
+        console.log(
+            "NOMBRE ENVIADO:",
+            nombre
         );
 
 
-    botonPagar.addEventListener(
-        "click",
-        async function() {
-
-            var nombre =
-                document
-                    .querySelector("#nombre")
-                    .value
-                    .trim();
-
-            var email =
-                document
-                    .querySelector("#email")
-                    .value
-                    .trim();
+        console.log(
+            "EMAIL ENVIADO:",
+            email
+        );
 
 
-            if (nombre === "") {
-
-                alert(
-                    "Ingresá tu nombre."
-                );
-
-                return;
-            }
+        console.log(
+            "TOKEN EXISTE:",
+            !!token
+        );
 
 
-            if (email === "") {
+        const respuesta =
+            await fetch(
+                `${URL_SUPABASE}/functions/v1/crear-pago`,
+                {
 
-                alert(
-                    "Ingresá tu correo electrónico."
-                );
+                    method: "POST",
 
-                return;
-            }
+                    headers: {
 
+                        "Authorization":
+                            `Bearer ${token}`,
 
-            if (carrito.length !== 1) {
+                        "apikey":
+                            KEY_SUPABASE,
 
-                alert(
-                    "Por ahora la compra debe contener un solo álbum."
-                );
+                        "Content-Type":
+                            "application/json"
 
-                return;
-            }
+                    },
 
+                    body:
+                        JSON.stringify({
 
-            var album =
-                carrito[0];
+                            titulo:
+                                album.titulo,
 
+                            precio:
+                                Number(album.precio),
 
-            botonPagar.disabled =
-                true;
+                            nombre:
+                                nombre,
 
-            botonPagar.textContent =
-                "Creando pago...";
+                            email:
+                                email,
 
+                            album_id:
+                                album.id
 
-            try {
+                        })
 
-                var respuesta =
-                    await fetch(
-                        "https://zyyvjbtsldxehaulgmgt.supabase.co/functions/v1/crear-pago",
-                        {
-
-                            method:
-                                "POST",
-
-                            headers: {
-
-                                "Authorization":
-                                    "Bearer " +
-                                    tokenUsuario,
-
-                                "apikey":
-                                    "sb_publishable_KtoC3FL-i8Dr9eiVdcfE-g_3UZQyHBI",
-
-                                "Content-Type":
-                                    "application/json"
-
-                            },
-
-                            body:
-                                JSON.stringify({
-
-                                    titulo:
-                                        album.titulo,
-
-                                    precio:
-                                        Number(
-                                            album.precio
-                                        ),
-
-                                    email:
-                                        email,
-
-                                    album_id:
-                                        album.id
-
-                                })
-
-                        }
-                    );
-
-
-                var resultado =
-                    await respuesta.json();
-
-
-                console.log(
-                    "RESPUESTA CREAR-PAGO:",
-                    resultado
-                );
-
-
-                if (!respuesta.ok) {
-
-                    console.error(
-                        "ERROR CREAR-PAGO:",
-                        resultado
-                    );
-
-                    alert(
-                        "No se pudo crear el pago.\n\n" +
-                        (
-                            resultado.error ||
-                            "Error desconocido"
-                        )
-                    );
-
-                    botonPagar.disabled =
-                        false;
-
-                    botonPagar.textContent =
-                        "Continuar al pago";
-
-                    return;
                 }
+            );
 
 
-                if (
-                    !resultado.checkout_url
-                ) {
-
-                    alert(
-                        "Mercado Pago no devolvió el enlace de pago."
-                    );
-
-                    botonPagar.disabled =
-                        false;
-
-                    botonPagar.textContent =
-                        "Continuar al pago";
-
-                    return;
-                }
+        const texto =
+            await respuesta.text();
 
 
-                console.log(
-                    "REDIRIGIENDO A MERCADO PAGO:",
-                    resultado.checkout_url
-                );
+        console.log(
+            "RESPUESTA CREAR-PAGO:",
+            respuesta.status,
+            texto
+        );
 
 
-                window.location.href =
-                    resultado.checkout_url;
+        let datos = {};
 
 
-            } catch (error) {
+        try {
 
-                console.error(
-                    "ERROR DE CONEXIÓN:",
-                    error
-                );
-
-                alert(
-                    "No se pudo conectar con el sistema de pago."
-                );
-
-                botonPagar.disabled =
-                    false;
-
-                botonPagar.textContent =
-                    "Continuar al pago";
-
-            }
+            datos =
+                JSON.parse(texto);
 
         }
-    );
+
+        catch {
+
+            datos = {};
+
+        }
+
+
+        if (!respuesta.ok) {
+
+            throw new Error(
+                datos.message ||
+                datos.error ||
+                "No se pudo crear el pago."
+            );
+
+        }
+
+
+        if (!datos.checkout_url) {
+
+            throw new Error(
+                "Mercado Pago no devolvió una URL de pago."
+            );
+
+        }
+
+
+        window.location.href =
+            datos.checkout_url;
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "ERROR CREANDO PAGO:",
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "No se pudo crear el pago."
+        );
+
+
+        boton.disabled = false;
+
+        boton.textContent =
+            "Continuar al pago";
+
+    }
+
+});
+
 
 }

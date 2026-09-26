@@ -1,207 +1,190 @@
-console.log("CARRITO.JS INICIADO");
+const carritoContenedor =
+document.getElementById("carrito");
 
-var carrito = JSON.parse(
-localStorage.getItem("carrito")
-) || [];
+const totalElemento =
+document.getElementById("total");
 
-console.log(
-"CARRITO GUARDADO:",
-carrito
-);
-
-var contenedor =
-document.querySelector("#carrito");
-
-var contador =
-document.querySelector("#contador-carrito");
-
-function actualizarContador() {
-
-if (!contador) {
-    return;
-}
-
-contador.textContent =
-    carrito.length;
-
-}
-
-function guardarCarrito() {
-
-localStorage.setItem(
-    "carrito",
-    JSON.stringify(carrito)
-);
-
-actualizarContador();
-
-}
+let carrito =
+JSON.parse(localStorage.getItem("carrito")) || [];
 
 function mostrarCarrito() {
 
-actualizarContador();
+
+carritoContenedor.innerHTML = "";
+
 
 if (carrito.length === 0) {
 
-    contenedor.innerHTML =
-        "<div class='carrito-vacio'>" +
-            "<h2>Tu carrito está vacío</h2>" +
-            "<p>Todavía no agregaste ningún álbum.</p>" +
-            "<a href='index.html'>Explorar álbumes</a>" +
-        "</div>";
+    carritoContenedor.innerHTML = `
+        <div class="carrito-vacio">
+
+            <h2>
+                Tu carrito está vacío
+            </h2>
+
+            <p>
+                Todavía no agregaste ningún álbum.
+            </p>
+
+            <a href="./albumes.html">
+                Ver álbumes
+            </a>
+
+        </div>
+    `;
+
+    totalElemento.textContent = "$0";
 
     return;
 }
 
-var total = 0;
 
-contenedor.innerHTML = "";
-
-
-for (
-    var i = 0;
-    i < carrito.length;
-    i++
-) {
-
-    var album = carrito[i];
-
-    total =
-        total + Number(album.precio);
+let total = 0;
 
 
-    var producto =
+carrito.forEach((album, indice) => {
+
+    total += Number(album.precio);
+
+
+    const item =
         document.createElement("div");
 
-    producto.className =
+    item.className =
         "album-card";
 
 
-    producto.innerHTML =
-        "<img src='" +
-        album.portada_url +
-        "'>" +
+    item.innerHTML = `
 
-        "<h3>" +
-        album.titulo +
-        "</h3>" +
+        <div class="album-info">
 
-        "<p>Por: " +
-        album.artista +
-        "</p>" +
+            <img
+                src="${album.portada_url || "https://via.placeholder.com/300"}"
+                alt="${album.titulo}"
+            >
 
-        "<p class='precio'>$" +
-        album.precio +
-        "</p>" +
+            <div>
 
-        "<button class='boton-eliminar' data-id='" +
-        album.id +
-        "'>" +
-        "🗑️ Eliminar" +
-        "</button>";
+                <h3>
+                    ${album.titulo}
+                </h3>
 
+                <p>
+                    ${album.artista || "Artista"}
+                </p>
 
-    contenedor.appendChild(
-        producto
-    );
-}
+                <div class="precio">
+                    $${Number(album.precio)}
+                </div>
+
+            </div>
+
+        </div>
 
 
-var resumen =
+        <button
+            class="boton-eliminar"
+            data-indice="${indice}"
+            title="Eliminar"
+        >
+            ×
+        </button>
+
+    `;
+
+
+    carritoContenedor.appendChild(item);
+
+});
+
+
+totalElemento.textContent =
+    "$" + total;
+
+
+const resumen =
     document.createElement("div");
 
 resumen.className =
     "resumen-carrito";
 
 
-resumen.innerHTML =
-    "<h2>Total: $" +
-    total +
-    "</h2>" +
+resumen.innerHTML = `
 
-    "<button id='boton-pagar'>" +
-    "Continuar al pago" +
-    "</button>";
+    <h2>
+        Total: $${total}
+    </h2>
 
+    <button
+        id="boton-pagar"
+        type="button"
+    >
+        Pagar
+    </button>
 
-contenedor.appendChild(
-    resumen
-);
-
-
-var botonesEliminar =
-    document.querySelectorAll(
-        ".boton-eliminar"
-    );
+`;
 
 
-for (
-    var j = 0;
-    j < botonesEliminar.length;
-    j++
-) {
+carritoContenedor.appendChild(resumen);
 
-    botonesEliminar[j]
-        .addEventListener(
+
+document
+    .querySelectorAll(".boton-eliminar")
+    .forEach(boton => {
+
+        boton.addEventListener(
             "click",
-            function() {
+            () => {
 
-                var id =
+                const indice =
                     Number(
-                        this.getAttribute(
-                            "data-id"
-                        )
+                        boton.dataset.indice
                     );
 
 
-                var nuevoCarrito = [];
+                carrito.splice(
+                    indice,
+                    1
+                );
 
 
-                for (
-                    var k = 0;
-                    k < carrito.length;
-                    k++
-                ) {
+                localStorage.setItem(
+                    "carrito",
+                    JSON.stringify(carrito)
+                );
 
-                    if (
-                        carrito[k].id !== id
-                    ) {
-
-                        nuevoCarrito.push(
-                            carrito[k]
-                        );
-                    }
-                }
-
-
-                carrito =
-                    nuevoCarrito;
-
-
-                guardarCarrito();
 
                 mostrarCarrito();
 
             }
         );
-}
+
+    });
 
 
-var botonPagar =
-    document.querySelector(
-        "#boton-pagar"
+const botonPagar =
+    document.getElementById("boton-pagar");
+
+
+if (botonPagar) {
+
+    botonPagar.addEventListener(
+        "click",
+        () => {
+
+            if (carrito.length === 0) {
+                return;
+            }
+
+
+            window.location.href =
+                "./checkout.html";
+
+        }
     );
 
+}
 
-botonPagar.addEventListener(
-    "click",
-    function() {
-
-        window.location.href =
-            "checkout.html";
-
-    }
-);
 
 }
 

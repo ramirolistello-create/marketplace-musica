@@ -1,497 +1,303 @@
-var URL_SUPABASE =
-    "https://zyyvjbtsldxehaulgmgt.supabase.co";
-
 var URL_ALBUMES =
-    URL_SUPABASE +
-    "/rest/v1/albumes?select=id,titulo,descripcion,precio,portada_url,artista_id,perfiles(nombre)";
+"https://zyyvjbtsldxehaulgmgt.supabase.co/rest/v1/albumes?select=id,titulo,descripcion,precio,portada_url,artista_id,perfiles(nombre)";
 
 var URL_PERFILES =
-    URL_SUPABASE +
-    "/rest/v1/perfiles?select=id,nombre,tipo,usuario_id";
+"https://zyyvjbtsldxehaulgmgt.supabase.co/rest/v1/perfiles?select=id,nombre,tipo,usuario_id";
 
 var KEY_SUPABASE =
-    "sb_publishable_KtoC3FL-i8Dr9eiVdcfE-g_3UZQyHBI";
-
+"sb_publishable_KtoC3FL-i8Dr9eiVdcfE-g_3UZQyHBI";
 
 console.log("INICIO");
-
-
 
 /* ============================= */
 /* CARGAR ÁLBUMES */
 /* ============================= */
 
 var solicitud =
-    new XMLHttpRequest();
-
+new XMLHttpRequest();
 
 solicitud.open(
-    "GET",
-    URL_ALBUMES,
-    true
+"GET",
+URL_ALBUMES,
+true
 );
-
 
 solicitud.setRequestHeader(
-    "apikey",
-    KEY_SUPABASE
+"apikey",
+KEY_SUPABASE
 );
 
-
 solicitud.addEventListener(
-    "load",
-    function() {
+"load",
+function() {
+
+
+    console.log(
+        "RESPUESTA RECIBIDA"
+    );
+
+    console.log(
+        solicitud.status
+    );
+
+
+    if (
+        solicitud.status !== 200
+    ) {
 
         console.log(
-            "RESPUESTA RECIBIDA"
+            "ERROR SUPABASE:",
+            solicitud.responseText
         );
 
-        console.log(
-            solicitud.status
-        );
+        return;
+    }
 
 
-        if (
-            solicitud.status !== 200
-        ) {
+    var albumes;
 
-            console.log(
-                "ERROR SUPABASE:",
-                solicitud.responseText
-            );
+    try {
 
-            return;
-
-        }
-
-
-        var albumes =
+        albumes =
             JSON.parse(
                 solicitud.responseText
             );
 
+    } catch (error) {
 
-        console.log(
-            "ALBUMES:",
-            albumes
+        console.error(
+            "ERROR PARSEANDO ÁLBUMES:",
+            error
+        );
+
+        return;
+    }
+
+
+    console.log(
+        "ALBUMES:",
+        albumes
+    );
+
+
+    var contenedor =
+        document.querySelector(
+            ".albums"
         );
 
 
-        var contenedor =
-            document.querySelector(
-                ".albums"
-            );
+    if (!contenedor) {
+
+        console.log(
+            "No se encontró .albums"
+        );
+
+        return;
+    }
 
 
-        if (!contenedor) {
-
-            console.log(
-                "No se encontró .albums"
-            );
-
-            return;
-
-        }
+    contenedor.innerHTML =
+        "";
 
 
-        contenedor.innerHTML =
-            "";
+    for (
+        var i = 0;
+        i < albumes.length;
+        i++
+    ) {
+
+        var album =
+            albumes[i];
 
 
-        for (
-            var i = 0;
-            i < albumes.length;
-            i++
+        var nombreArtista =
+            "Artista";
+
+
+        if (
+            album.perfiles &&
+            album.perfiles.nombre
         ) {
 
-            var album =
-                albumes[i];
-
-
-            var nombreArtista =
-                "Artista";
-
-
-            if (
-                album.perfiles &&
-                album.perfiles.nombre
-            ) {
-
-                nombreArtista =
-                    album.perfiles.nombre;
-
-            }
-
-
-            var tarjeta =
-                document.createElement(
-                    "div"
-                );
-
-
-            tarjeta.className =
-                "album-card";
-
-
-            /* ============================= */
-            /* DATOS BÁSICOS DE LA TARJETA */
-            /* ============================= */
-
-            tarjeta.innerHTML =
-
-                "<img src='" +
-                album.portada_url +
-                "' alt='" +
-                album.titulo +
-                "'>" +
-
-                "<h3>" +
-                album.titulo +
-                "</h3>" +
-
-                "<p>Por: " +
-                nombreArtista +
-                "</p>" +
-
-                "<p>" +
-                (album.descripcion || "") +
-                "</p>" +
-
-                "<p class='precio'>$" +
-                album.precio +
-                "</p>" +
-
-                "<div class='preview-container'>" +
-                    "<p>Cargando preview...</p>" +
-                "</div>" +
-
-                "<a href='album.html?id=" +
-                album.id +
-                "' class='boton-comprar'>" +
-                "Ver álbum" +
-                "</a>";
-
-
-            contenedor.appendChild(
-                tarjeta
-            );
-
-
-            /* ============================= */
-            /* BUSCAR PREVIEW */
-            /* ============================= */
-
-            var urlCanciones =
-                URL_SUPABASE +
-                "/rest/v1/canciones" +
-                "?select=id,titulo,preview_path" +
-                "&album_id=eq." +
-                encodeURIComponent(
-                    album.id
-                );
-
-
-            fetch(
-                urlCanciones,
-                {
-                    method: "GET",
-
-                    headers: {
-                        "apikey":
-                            KEY_SUPABASE,
-
-                        "Accept":
-                            "application/json"
-                    }
-                }
-            )
-
-            .then(
-                function(respuestaCanciones) {
-
-                    if (
-                        !respuestaCanciones.ok
-                    ) {
-
-                        throw new Error(
-                            "Error buscando preview"
-                        );
-
-                    }
-
-
-                    return respuestaCanciones.json();
-
-                }
-            )
-
-            .then(
-                function(canciones) {
-
-                    var previewContainer =
-                        tarjeta.querySelector(
-                            ".preview-container"
-                        );
-
-
-                    if (!previewContainer) {
-
-                        return;
-
-                    }
-
-
-                    /* ============================= */
-                    /* NO HAY CANCIONES */
-                    /* ============================= */
-
-                    if (
-                        !canciones ||
-                        canciones.length === 0
-                    ) {
-
-                        previewContainer.innerHTML =
-                            "";
-
-                        return;
-
-                    }
-
-
-                    var cancion =
-                        canciones[0];
-
-
-                    /* ============================= */
-                    /* NO HAY PREVIEW */
-                    /* ============================= */
-
-                    if (
-                        !cancion.preview_path
-                    ) {
-
-                        previewContainer.innerHTML =
-                            "<p>Preview no disponible</p>";
-
-                        return;
-
-                    }
-
-
-                    /* ============================= */
-                    /* URL PÚBLICA DEL MP3 */
-                    /* ============================= */
-
-                    var previewURL =
-                        URL_SUPABASE +
-                        "/storage/v1/object/public/previews/" +
-                        cancion.preview_path;
-
-
-                    /* ============================= */
-                    /* REPRODUCTOR */
-                    /* ============================= */
-
-                    previewContainer.innerHTML =
-
-                        "<p class='preview-titulo'>" +
-                        "Escuchar preview" +
-                        "</p>" +
-
-                        "<audio controls preload='metadata'>" +
-
-                            "<source src='" +
-                            previewURL +
-                            "' type='audio/mpeg'>" +
-
-                            "Tu navegador no soporta audio." +
-
-                        "</audio>" +
-
-                        "<small>Preview de 30 segundos</small>";
-
-                }
-            )
-
-            .catch(
-                function(error) {
-
-                    console.error(
-                        "ERROR PREVIEW:",
-                        error
-                    );
-
-
-                    var previewContainer =
-                        tarjeta.querySelector(
-                            ".preview-container"
-                        );
-
-
-                    if (
-                        previewContainer
-                    ) {
-
-                        previewContainer.innerHTML =
-                            "";
-
-                    }
-
-                }
-            );
+            nombreArtista =
+                album.perfiles.nombre;
 
         }
 
-    }
-);
+
+        var tarjeta =
+            document.createElement(
+                "div"
+            );
 
 
-solicitud.addEventListener(
-    "error",
-    function() {
+        tarjeta.className =
+            "album-card";
 
-        console.log(
-            "ERROR DE CONEXIÓN CON SUPABASE"
+
+        tarjeta.innerHTML =
+
+            "<img src='" +
+            (
+                album.portada_url ||
+                "https://via.placeholder.com/300"
+            ) +
+            "'>" +
+
+            "<h3>" +
+            (
+                album.titulo ||
+                "Álbum sin título"
+            ) +
+            "</h3>" +
+
+            "<p>Por: " +
+            nombreArtista +
+            "</p>" +
+
+            "<p>" +
+            (
+                album.descripcion ||
+                ""
+            ) +
+            "</p>" +
+
+            "<p class='precio'>$" +
+            Number(
+                album.precio || 0
+            ).toLocaleString("es-AR") +
+            "</p>" +
+
+            "<a href='./album.html?id=" +
+            album.id +
+            "' class='boton-comprar'>" +
+            "VER" +
+            "</a>";
+
+
+        contenedor.appendChild(
+            tarjeta
         );
 
     }
+
+}
+
+
 );
 
+solicitud.addEventListener(
+"error",
+function() {
+
+
+    console.log(
+        "ERROR DE CONEXIÓN CON SUPABASE"
+    );
+
+}
+
+
+);
 
 solicitud.send();
 
-
 console.log(
-    "SOLICITUD ENVIADA"
+"SOLICITUD ENVIADA"
 );
-
-
-
 
 /* ============================= */
 /* USUARIO Y PERFIL */
 /* ============================= */
 
 var usuarioSesion =
-    document.getElementById(
-        "usuarioSesion"
-    );
-
+document.getElementById(
+"usuarioSesion"
+);
 
 var token =
-    localStorage.getItem(
-        "access_token"
-    );
-
+localStorage.getItem(
+"access_token"
+);
 
 if (
-    token &&
-    usuarioSesion
+token &&
+usuarioSesion
 ) {
 
-    try {
 
-        var partesToken =
-            token.split(".");
+try {
 
-
-        var datosToken =
-            JSON.parse(
-                atob(
-                    partesToken[1]
-                        .replace(/-/g, "+")
-                        .replace(/_/g, "/")
-                )
-            );
+    var partesToken =
+        token.split(".");
 
 
-        var usuarioId =
-            datosToken.sub;
+    var datosToken =
+        JSON.parse(
+            atob(
+                partesToken[1]
+                    .replace(/-/g, "+")
+                    .replace(/_/g, "/")
+            )
+        );
 
 
-        var correoUsuario =
-            datosToken.email;
+    var usuarioId =
+        datosToken.sub;
 
 
-        if (
-            usuarioId
-        ) {
-
-            var solicitudPerfil =
-                new XMLHttpRequest();
+    var correoUsuario =
+        datosToken.email;
 
 
-            solicitudPerfil.open(
-                "GET",
-                URL_PERFILES +
-                "&usuario_id=eq." +
-                usuarioId,
-                true
-            );
+    if (
+        usuarioId
+    ) {
+
+        var solicitudPerfil =
+            new XMLHttpRequest();
 
 
-            solicitudPerfil.setRequestHeader(
-                "apikey",
-                KEY_SUPABASE
-            );
+        solicitudPerfil.open(
+            "GET",
+            URL_PERFILES +
+            "&usuario_id=eq." +
+            encodeURIComponent(
+                usuarioId
+            ),
+            true
+        );
 
 
-            solicitudPerfil.addEventListener(
-                "load",
-                function() {
-
-                    if (
-                        solicitudPerfil.status !== 200
-                    ) {
-
-                        console.error(
-                            "ERROR CARGANDO PERFIL:",
-                            solicitudPerfil.responseText
-                        );
+        solicitudPerfil.setRequestHeader(
+            "apikey",
+            KEY_SUPABASE
+        );
 
 
-                        if (
-                            correoUsuario
-                        ) {
-
-                            usuarioSesion.textContent =
-                                correoUsuario;
-
-                        }
+        solicitudPerfil.setRequestHeader(
+            "Authorization",
+            "Bearer " + token
+        );
 
 
-                        return;
+        solicitudPerfil.addEventListener(
+            "load",
+            function() {
 
-                    }
+                if (
+                    solicitudPerfil.status !== 200
+                ) {
 
-
-                    var perfiles =
-                        JSON.parse(
-                            solicitudPerfil.responseText
-                        );
-
-
-                    console.log(
-                        "PERFIL USUARIO:",
-                        perfiles
+                    console.error(
+                        "ERROR CARGANDO PERFIL:",
+                        solicitudPerfil.responseText
                     );
 
 
                     if (
-                        perfiles.length > 0 &&
-                        perfiles[0].nombre
+                        correoUsuario
                     ) {
-
-                        usuarioSesion.textContent =
-                            perfiles[0].nombre;
-
-
-                        console.log(
-                            "NOMBRE DEL PERFIL MOSTRADO:",
-                            perfiles[0].nombre
-                        );
-
-                    } else {
 
                         usuarioSesion.textContent =
                             correoUsuario;
@@ -499,98 +305,146 @@ if (
                     }
 
 
-                    usuarioSesion.href =
-                        "#";
-
-
-
-                    /* ============================= */
-                    /* CERRAR SESIÓN */
-                    /* ============================= */
-
-                    usuarioSesion.addEventListener(
-                        "click",
-                        function(event) {
-
-                            event.preventDefault();
-
-
-                            var cerrarSesion =
-                                confirm(
-                                    "¿Querés cerrar sesión?"
-                                );
-
-
-                            if (
-                                !cerrarSesion
-                            ) {
-
-                                return;
-
-                            }
-
-
-                            localStorage.removeItem(
-                                "access_token"
-                            );
-
-
-                            localStorage.removeItem(
-                                "refresh_token"
-                            );
-
-
-                            localStorage.removeItem(
-                                "usuario_id"
-                            );
-
-
-                            console.log(
-                                "SESIÓN CERRADA"
-                            );
-
-
-                            window.location.href =
-                                "index.html";
-
-                        }
-                    );
-
+                    return;
                 }
-            );
 
 
-            solicitudPerfil.addEventListener(
-                "error",
-                function() {
+                var perfiles;
+
+
+                try {
+
+                    perfiles =
+                        JSON.parse(
+                            solicitudPerfil.responseText
+                        );
+
+                } catch (error) {
 
                     console.error(
-                        "ERROR DE CONEXIÓN AL CARGAR PERFIL"
+                        "ERROR PARSEANDO PERFIL:",
+                        error
                     );
 
+                    return;
                 }
-            );
 
 
-            solicitudPerfil.send();
+                console.log(
+                    "PERFIL USUARIO:",
+                    perfiles
+                );
 
-        }
 
-    } catch (
-        error
-    ) {
+                if (
+                    perfiles.length > 0 &&
+                    perfiles[0].nombre
+                ) {
 
-        console.error(
-            "No se pudo leer el usuario:",
-            error
+                    usuarioSesion.textContent =
+                        perfiles[0].nombre;
+
+
+                    console.log(
+                        "NOMBRE DEL PERFIL MOSTRADO:",
+                        perfiles[0].nombre
+                    );
+
+                } else {
+
+                    usuarioSesion.textContent =
+                        correoUsuario;
+
+                }
+
+
+                /*
+                =================================
+                USUARIO LOGUEADO
+                =================================
+                */
+
+                usuarioSesion.addEventListener(
+                    "click",
+                    function(event) {
+
+                        event.preventDefault();
+
+
+                        var cerrarSesion =
+                            confirm(
+                                "¿Querés cerrar sesión?"
+                            );
+
+
+                        if (
+                            !cerrarSesion
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        localStorage.removeItem(
+                            "access_token"
+                        );
+
+
+                        localStorage.removeItem(
+                            "refresh_token"
+                        );
+
+
+                        localStorage.removeItem(
+                            "usuario_id"
+                        );
+
+
+                        console.log(
+                            "SESIÓN CERRADA"
+                        );
+
+
+                        window.location.href =
+                            "./index.html";
+
+                    }
+                );
+
+            }
         );
 
+
+        solicitudPerfil.addEventListener(
+            "error",
+            function() {
+
+                console.error(
+                    "ERROR DE CONEXIÓN AL CARGAR PERFIL"
+                );
+
+            }
+        );
+
+
+        solicitudPerfil.send();
+
     }
+
+} catch (
+    error
+) {
+
+    console.error(
+        "NO SE PUDO LEER EL USUARIO:",
+        error
+    );
 
 }
 
 
-
+}
 
 /* ============================= */
 /* CONTADOR DEL CARRITO */
@@ -598,55 +452,69 @@ if (
 
 function actualizarContadorCarrito() {
 
-    var contador =
-        document.querySelector(
-            "#contador-carrito"
-        );
+
+var contador =
+    document.querySelector(
+        "#contador-carrito"
+    );
 
 
-    if (
-        !contador
-    ) {
+if (
+    !contador
+) {
 
-        return;
+    return;
 
-    }
+}
 
 
-    var carrito =
+var carrito;
+
+try {
+
+    carrito =
         JSON.parse(
             localStorage.getItem(
                 "carrito"
             )
         ) || [];
 
+} catch (error) {
 
-    contador.textContent =
-        carrito.length;
+    console.error(
+        "ERROR LEYENDO CARRITO:",
+        error
+    );
+
+    carrito = [];
 
 }
 
 
+contador.textContent =
+    carrito.length;
 
+
+}
 
 /* ============================= */
-/* ACTUALIZAR AL CARGAR LA PÁGINA */
+/* ACTUALIZAR AL CARGAR */
 /* ============================= */
 
 actualizarContadorCarrito();
 
-
-
-
 /* ============================= */
-/* ACTUALIZAR SI CAMBIA EL CARRITO */
+/* ACTUALIZAR SI CAMBIA */
 /* ============================= */
 
 window.addEventListener(
-    "storage",
-    function() {
+"storage",
+function() {
 
-        actualizarContadorCarrito();
 
-    }
+    actualizarContadorCarrito();
+
+}
+
+
 );

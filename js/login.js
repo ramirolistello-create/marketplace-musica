@@ -7,249 +7,346 @@ var loginButton = document.getElementById("loginButton");
 var registerButton = document.getElementById("registerButton");
 var mensaje = document.getElementById("mensaje");
 
+/* =====================================================
+REGISTRO
+===================================================== */
 
 registerButton.addEventListener("click", function() {
 
-    var email = emailInput.value;
-    var password = passwordInput.value;
 
-    if (!email || !password) {
+var email = emailInput.value.trim();
+var password = passwordInput.value;
+
+if (!email || !password) {
+
+    mensaje.textContent =
+        "Completá el correo y la contraseña.";
+
+    return;
+}
+
+mensaje.textContent =
+    "Creando cuenta...";
+
+fetch(
+    SUPABASE_URL + "/auth/v1/signup",
+    {
+        method: "POST",
+
+        headers: {
+            "apikey": SUPABASE_KEY,
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            email: email,
+            password: password
+        })
+    }
+)
+
+.then(function(respuesta) {
+
+    return respuesta.json();
+
+})
+
+.then(function(resultado) {
+
+    console.log("REGISTRO:", resultado);
+
+    if (resultado.error) {
 
         mensaje.textContent =
-            "Completa el correo y la contrasena.";
+            resultado.error.message ||
+            "No se pudo crear la cuenta.";
+
+        return;
+    }
+
+    if (resultado.id) {
+
+        mensaje.textContent =
+            "Cuenta creada correctamente.";
+
+        return;
+    }
+
+    if (
+        resultado.user &&
+        resultado.user.id
+    ) {
+
+        mensaje.textContent =
+            "Cuenta creada correctamente.";
 
         return;
     }
 
     mensaje.textContent =
-        "Creando cuenta...";
+        "Registro realizado correctamente.";
 
-    fetch(
-        SUPABASE_URL + "/auth/v1/signup",
-        {
-            method: "POST",
+})
 
-            headers: {
-                "apikey": SUPABASE_KEY,
-                "Content-Type": "application/json"
-            },
+.catch(function(error) {
 
-            body: JSON.stringify({
-                email: email,
-                password: password
-            })
-        }
-    )
+    console.error(
+        "ERROR REGISTRO:",
+        error
+    );
 
-    .then(function(respuesta) {
-
-        return respuesta.json();
-
-    })
-
-    .then(function(resultado) {
-
-        console.log("REGISTRO:", resultado);
-
-        if (resultado.error) {
-
-            mensaje.textContent =
-                resultado.error.message ||
-                "No se pudo crear la cuenta.";
-
-            return;
-        }
-
-        if (resultado.id) {
-
-            mensaje.textContent =
-                "Cuenta creada correctamente. Usuario ID: " +
-                resultado.id;
-
-            return;
-        }
-
-        if (resultado.user && resultado.user.id) {
-
-            mensaje.textContent =
-                "Cuenta creada correctamente. Usuario ID: " +
-                resultado.user.id;
-
-            return;
-        }
-
-        mensaje.textContent =
-            "REGISTRO OK. Revisá la consola.";
-
-    })
-
-    .catch(function(error) {
-
-        console.error("ERROR REGISTRO:", error);
-
-        mensaje.textContent =
-            "ERROR: " + error.message;
-
-    });
+    mensaje.textContent =
+        "No se pudo conectar con el servidor.";
 
 });
 
 
+});
+
+/* =====================================================
+LOGIN
+===================================================== */
+
 loginButton.addEventListener("click", function() {
 
-    var email = emailInput.value;
-    var password = passwordInput.value;
 
-    if (!email || !password) {
+var email =
+    emailInput.value.trim();
+
+var password =
+    passwordInput.value;
+
+if (!email || !password) {
+
+    mensaje.textContent =
+        "Completá el correo y la contraseña.";
+
+    return;
+}
+
+mensaje.textContent =
+    "Iniciando sesión...";
+
+fetch(
+    SUPABASE_URL +
+    "/auth/v1/token?grant_type=password",
+    {
+        method: "POST",
+
+        headers: {
+            "apikey": SUPABASE_KEY,
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            email: email,
+            password: password
+        })
+    }
+)
+
+.then(function(respuesta) {
+
+    return respuesta.json();
+
+})
+
+.then(function(resultado) {
+
+    console.log(
+        "LOGIN:",
+        resultado
+    );
+
+
+    /* =============================================
+       ERROR DE AUTENTICACIÓN
+    ============================================= */
+
+    if (
+        resultado.error ||
+        resultado.error_description ||
+        resultado.msg
+    ) {
+
+        var mensajeError =
+            (
+                resultado.error_description ||
+                resultado.error ||
+                resultado.msg ||
+                ""
+            ).toLowerCase();
+
+
+        if (
+            mensajeError.includes(
+                "invalid login credentials"
+            ) ||
+            mensajeError.includes(
+                "invalid credentials"
+            ) ||
+            mensajeError.includes(
+                "invalid"
+            )
+        ) {
+
+            mensaje.textContent =
+                "Correo o contraseña incorrectos.";
+
+            return;
+
+        }
+
+
+        if (
+            mensajeError.includes(
+                "email"
+            )
+        ) {
+
+            mensaje.textContent =
+                "El correo electrónico no es válido.";
+
+            return;
+
+        }
+
 
         mensaje.textContent =
-            "Completa el correo y la contrasena.";
+            "Correo o contraseña incorrectos.";
 
         return;
     }
 
-    mensaje.textContent =
-        "Iniciando sesion...";
 
-    fetch(
-        SUPABASE_URL + "/auth/v1/token?grant_type=password",
-        {
-            method: "POST",
+    /* =============================================
+       COMPROBAR TOKEN
+    ============================================= */
 
-            headers: {
-                "apikey": SUPABASE_KEY,
-                "Content-Type": "application/json"
-            },
+    if (!resultado.access_token) {
 
-            body: JSON.stringify({
-                email: email,
-                password: password
-            })
-        }
-    )
+        console.log(
+            "RESPUESTA COMPLETA LOGIN:",
+            JSON.stringify(resultado)
+        );
 
-    .then(function(respuesta) {
+        mensaje.textContent =
+            "Correo o contraseña incorrectos.";
 
-        return respuesta.json();
+        return;
+    }
 
-    })
 
-    .then(function(resultado) {
+    /* =============================================
+       COMPROBAR FORMATO TOKEN
+    ============================================= */
 
-        console.log("LOGIN:", resultado);
+    var partes =
+        resultado.access_token.split(".");
 
-        if (resultado.error) {
+    if (
+        partes.length !== 3
+    ) {
+
+        mensaje.textContent =
+            "No se pudo iniciar sesión.";
+
+        return;
+    }
+
+
+    /* =============================================
+       OBTENER USUARIO
+    ============================================= */
+
+    try {
+
+        var datosUsuario =
+            JSON.parse(
+                atob(
+                    partes[1]
+                        .replace(/-/g, "+")
+                        .replace(/_/g, "/")
+                )
+            );
+
+        var usuarioId =
+            datosUsuario.sub;
+
+
+        if (!usuarioId) {
 
             mensaje.textContent =
-                resultado.error_description ||
-                resultado.error.message ||
-                resultado.msg ||
-                "Correo o contrasena incorrectos.";
+                "No se pudo iniciar sesión.";
 
             return;
         }
 
-        if (!resultado.access_token) {
 
-            console.log(
-                "RESPUESTA COMPLETA LOGIN:",
-                JSON.stringify(resultado)
-            );
+        /* =========================================
+           GUARDAR SESIÓN
+        ========================================= */
 
-            mensaje.textContent =
-                "Supabase no devolvio el token de acceso.";
+        localStorage.setItem(
+            "access_token",
+            resultado.access_token
+        );
 
-            return;
-        }
+        localStorage.setItem(
+            "refresh_token",
+            resultado.refresh_token || ""
+        );
 
-        var partes =
-            resultado.access_token.split(".");
+        localStorage.setItem(
+            "usuario_id",
+            usuarioId
+        );
 
-        if (partes.length !== 3) {
 
-            mensaje.textContent =
-                "El token de Supabase no tiene un formato valido.";
+        mensaje.textContent =
+            "Sesión iniciada correctamente.";
 
-            return;
-        }
 
-        try {
+        console.log(
+            "USUARIO ID:",
+            usuarioId
+        );
 
-            var datosUsuario =
-                JSON.parse(
-                    atob(
-                        partes[1]
-                            .replace(/-/g, "+")
-                            .replace(/_/g, "/")
-                    )
-                );
 
-            var usuarioId = datosUsuario.sub;
+        setTimeout(function() {
 
-            if (!usuarioId) {
+            window.location.href =
+                "index.html";
 
-                mensaje.textContent =
-                    "No se pudo obtener el ID del usuario.";
+        }, 1000);
 
-                return;
-            }
+    }
 
-            localStorage.setItem(
-                "access_token",
-                resultado.access_token
-            );
-
-            localStorage.setItem(
-                "refresh_token",
-                resultado.refresh_token || ""
-            );
-
-            localStorage.setItem(
-                "usuario_id",
-                usuarioId
-            );
-
-            mensaje.textContent =
-                "Sesion iniciada correctamente.";
-
-            console.log(
-                "USUARIO ID:",
-                usuarioId
-            );
-
-            setTimeout(function() {
-
-                window.location.href =
-                    "index.html";
-
-            }, 1000);
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "ERROR PROCESANDO TOKEN:",
-                error
-            );
-
-            mensaje.textContent =
-                "Error procesando el token.";
-
-        }
-
-    })
-
-    .catch(function(error) {
+    catch (error) {
 
         console.error(
-            "ERROR LOGIN:",
+            "ERROR PROCESANDO TOKEN:",
             error
         );
 
         mensaje.textContent =
-            "ERROR: " + error.message;
+            "No se pudo iniciar sesión.";
 
-    });
+    }
+
+})
+
+.catch(function(error) {
+
+    console.error(
+        "ERROR LOGIN:",
+        error
+    );
+
+    mensaje.textContent =
+        "No se pudo conectar con el servidor.";
+
+});
+
 
 });

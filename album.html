@@ -1,78 +1,345 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
 
-    <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
 
-    <title>Álbum — Marketplace Música</title>
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <link rel="stylesheet" href="css/style.css">
+<title>Álbum - Marketplace Música</title>
+
+<link
+    rel="stylesheet"
+    href="css/style.css?v=10"
+>
+
+<style>
+
+    /* =====================================================
+       DETALLE DEL ÁLBUM - DISEÑO COMPACTO
+    ===================================================== */
+
+    #album {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 25px 0;
+    }
+
+
+    #album > img {
+        display: block;
+
+        width: 220px;
+        height: 220px;
+
+        object-fit: cover;
+
+        margin: 0 auto 18px auto;
+
+        border-radius: 8px;
+    }
+
+
+    #album h1 {
+        margin: 0 0 8px 0;
+
+        font-size: 25px;
+        line-height: 1.2;
+
+        text-align: center;
+    }
+
+
+    #album h2 {
+        margin: 0 0 12px 0;
+
+        font-size: 15px;
+        font-weight: 500;
+
+        color: #a1a1aa;
+
+        text-align: center;
+    }
+
+
+    #album p {
+        max-width: 600px;
+
+        margin: 7px auto;
+
+        color: #a1a1aa;
+
+        font-size: 14px;
+        line-height: 1.5;
+
+        text-align: center;
+    }
+
+
+    #album .precio {
+        margin-top: 14px;
+
+        color: #c4b5fd;
+
+        font-size: 20px;
+        font-weight: bold;
+
+        text-align: center;
+    }
+
+
+    #album audio {
+        display: block;
+
+        width: 100%;
+        max-width: 600px;
+
+        height: 38px;
+
+        margin: 18px auto;
+    }
+
+
+    #album button,
+    #album .boton-comprar,
+    #album a.boton-comprar {
+
+        display: block;
+
+        width: auto;
+
+        margin: 15px auto 0 auto;
+
+        padding: 9px 20px;
+
+        background: #8b5cf6;
+        color: #ffffff;
+
+        border: none;
+        border-radius: 6px;
+
+        font-size: 13px;
+        font-weight: 600;
+
+        cursor: pointer;
+
+        text-decoration: none;
+
+        transition: background 0.2s ease;
+    }
+
+
+    #album button:hover,
+    #album .boton-comprar:hover,
+    #album a.boton-comprar:hover {
+
+        background: #7c3aed;
+
+    }
+
+
+    /* CONTENEDORES INTERNOS */
+
+    #album .album-info {
+
+        max-width: 650px;
+
+        margin: 0 auto;
+
+    }
+
+
+    /* MENSAJES */
+
+    #album .mensaje {
+
+        margin: 12px auto;
+
+        font-size: 13px;
+
+    }
+
+
+    /* MÓVIL */
+
+    @media (max-width: 600px) {
+
+        #album {
+            padding: 20px 10px;
+        }
+
+
+        #album > img {
+            width: 180px;
+            height: 180px;
+        }
+
+
+        #album h1 {
+            font-size: 22px;
+        }
+
+
+        #album p {
+            font-size: 13px;
+        }
+
+
+        #album audio {
+            width: 100%;
+        }
+
+    }
+
+</style>
 
 </head>
 
 <body>
 
-    <header>
-
-        <div class="logo">
-            Marketplace Música
-        </div>
-
-        <nav>
-
-            <a href="index.html">
-                Inicio
-            </a>
-
-            <a href="index.html">
-                Álbumes
-            </a>
-
-            <a href="#">
-                Artistas
-            </a>
-
-            <a href="login.html"
-               class="login"
-               id="usuarioSesion">
-                Iniciar sesión
-            </a>
-
-        </nav>
-
-    </header>
+<header>
 
 
-    <main>
-
-        <section>
-
-            <div id="album">
-
-                <p>
-                    Cargando álbum...
-                </p>
-
-            </div>
-
-        </section>
-
-    </main>
+<div class="header-inner">
 
 
-    <footer>
+    <!-- LOGO -->
 
-        Marketplace Música — Música independiente.
+    <a
+        href="./index.html"
+        class="logo"
+    >
+        Marketplace Música
+    </a>
 
-    </footer>
+
+    <!-- NAVEGACIÓN -->
+
+    <nav class="main-nav">
 
 
-<script src="js/album.js?v=2"></script>
+        <a
+            href="./index.html"
+            class="nav-link"
+        >
+            Inicio
+        </a>
 
-    <script src="js/app.js"></script>
+
+        <a
+            href="./albumes.html"
+            class="nav-link active"
+        >
+            Álbumes
+        </a>
+
+
+        <a
+            href="./artistas.html"
+            class="nav-link"
+        >
+            Artistas
+        </a>
+
+
+        <a
+            href="./biblioteca.html"
+            class="nav-link"
+        >
+            Mi biblioteca
+        </a>
+
+
+    </nav>
+
+
+    <!-- ACCIONES -->
+
+    <div class="header-actions">
+
+
+        <a
+            href="./carrito.html"
+            class="carrito-link"
+        >
+
+            <span class="cart-icon">
+                🛒
+            </span>
+
+            <span>
+                Carrito
+            </span>
+
+            <span id="contador-carrito">
+                0
+            </span>
+
+        </a>
+
+
+        <a
+            href="./login.html"
+            class="login"
+            id="usuarioSesion"
+        >
+            Iniciar sesión
+        </a>
+
+
+    </div>
+
+
+</div>
+
+
+</header>
+
+<!-- =====================================================
+     CONTENIDO DEL ÁLBUM
+====================================================== -->
+
+<main>
+
+
+<section>
+
+    <div id="album">
+
+        <p>
+            Cargando álbum...
+        </p>
+
+    </div>
+
+</section>
+
+
+</main>
+
+<!-- =====================================================
+     FOOTER
+====================================================== -->
+
+<footer>
+
+Marketplace Música — Música independiente.
+
+</footer>
+
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script src="./js/album.js?v=2"></script>
+
+<script src="./js/app.js?v=1"></script>
 
 </body>
 

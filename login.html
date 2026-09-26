@@ -1,74 +1,143 @@
 <!DOCTYPE html>
 
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
-<title>Iniciar sesión — Marketplace Música</title>
 
-<link rel="stylesheet" href="css/style.css">
-```
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Iniciar sesión - Marketplace Música</title>
+
+<link rel="stylesheet" href="./css/style.css?v=11">
+
 
 </head>
 
 <body>
 
-```
+
 <header>
 
-    <div class="logo">
-        Marketplace Música
-    </div>
+    <div class="header-inner">
 
-    <nav>
-        <a href="index.html">Inicio</a>
-        <a href="index.html">Álbumes</a>
-    </nav>
+        <a href="./index.html" class="logo">
+            Marketplace Música
+        </a>
+
+        <nav class="main-nav">
+
+            <a href="./index.html" class="nav-link">
+                Inicio
+            </a>
+
+            <a href="./albumes.html" class="nav-link">
+                Álbumes
+            </a>
+
+            <a href="./artistas.html" class="nav-link">
+                Artistas
+            </a>
+
+        </nav>
+
+        <div class="header-actions">
+
+            <a href="./carrito.html" class="carrito-link">
+
+                <span class="cart-icon">🛒</span>
+
+                <span>
+                    Carrito
+                </span>
+
+                <span id="contador-carrito">
+                    0
+                </span>
+
+            </a>
+
+            <a href="./login.html" class="login">
+                Iniciar sesión
+            </a>
+
+        </div>
+
+    </div>
 
 </header>
 
 
 <main>
 
-    <section class="login-section">
+    <div class="login-container">
 
-        <h1>Iniciar sesión</h1>
+        <h1>
+            Iniciar sesión
+        </h1>
+
 
         <input
             type="email"
             id="email"
             placeholder="Correo electrónico"
+            autocomplete="email"
         >
+
 
         <input
             type="password"
             id="password"
             placeholder="Contraseña"
+            autocomplete="current-password"
         >
 
-        <button id="loginButton">
+
+        <button
+            id="loginButton"
+            type="button"
+        >
             Iniciar sesión
         </button>
 
+
         <p id="mensaje"></p>
+
 
         <hr>
 
-        <h2>¿No tenés una cuenta?</h2>
 
-        <button id="registerButton">
+        <p>
+            ¿No tenés una cuenta?
+        </p>
+
+
+        <button
+            id="registerButton"
+            type="button"
+        >
             Crear cuenta
         </button>
 
-    </section>
+    </div>
 
 </main>
 
 
-<script src="js/login.js"></script>
-```
+<footer>
+
+    <p>
+        © 2026 Marketplace Música
+    </p>
+
+</footer>
+
+
+<script src="./js/login.js?v=2"></script>
+
 
 </body>
+
 </html>

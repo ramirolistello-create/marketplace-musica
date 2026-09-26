@@ -1,520 +1,403 @@
 console.log("ALBUM.JS INICIADO");
 
 var URL_SUPABASE =
-    "https://zyyvjbtsldxehaulgmgt.supabase.co";
+"https://zyyvjbtsldxehaulgmgt.supabase.co";
 
 var KEY_SUPABASE =
-    "sb_publishable_KtoC3FL-i8Dr9eiVdcfE-g_3UZQyHBI";
-
+"sb_publishable_KtoC3FL-i8Dr9eiVdcfE-g_3UZQyHBI";
 
 var parametros =
-    new URLSearchParams(
-        window.location.search
-    );
+new URLSearchParams(window.location.search);
 
 var idAlbum =
-    parametros.get("id");
-
-
-console.log(
-    "ID DEL ÁLBUM:",
-    idAlbum
-);
-
+parametros.get("id");
 
 var contenedor =
-    document.querySelector("#album");
+document.getElementById("album");
+
+if (!idAlbum) {
 
 
-if (!contenedor) {
+contenedor.innerHTML =
+    "<p>Álbum no encontrado.</p>";
 
-    console.error(
-        "NO SE ENCONTRÓ #album"
-    );
-
-} else if (!idAlbum) {
-
-    contenedor.innerHTML =
-        "<p>No se especificó ningún álbum.</p>";
 
 } else {
 
-    var url =
-        URL_SUPABASE +
-        "/rest/v1/albumes" +
-        "?select=id,titulo,descripcion,precio,portada_url,artista_id,perfiles(nombre)" +
-        "&id=eq." +
-        encodeURIComponent(idAlbum);
+
+var url =
+    URL_SUPABASE +
+    "/rest/v1/albumes" +
+    "?select=id,titulo,descripcion,precio,portada_url,artista_id,perfiles(nombre)" +
+    "&id=eq." +
+    encodeURIComponent(idAlbum);
 
 
-    console.log(
-        "URL ÁLBUM:",
-        url
-    );
+fetch(url, {
 
+    method: "GET",
 
-    var headers = {
+    headers: {
 
-        "apikey":
-            KEY_SUPABASE,
+        "apikey": KEY_SUPABASE,
 
-        "Accept":
-            "application/json"
-
-    };
-
-
-    var token =
-        localStorage.getItem(
-            "access_token"
-        );
-
-
-    if (token) {
-
-        headers["Authorization"] =
-            "Bearer " + token;
+        "Accept": "application/json"
 
     }
 
+})
 
-    fetch(
-        url,
-        {
-            method: "GET",
-            headers: headers
-        }
-    )
+.then(function(respuesta) {
 
-    .then(function (respuesta) {
+    console.log(
+        "RESPUESTA:",
+        respuesta.status
+    );
 
-        console.log(
-            "RESPUESTA:",
-            respuesta.status
-        );
+    return respuesta.text();
 
+})
 
-        return respuesta.text()
+.then(function(texto) {
 
-            .then(function (texto) {
+    var datos;
 
-                console.log(
-                    "RESPUESTA SUPABASE:",
-                    texto
-                );
+    try {
 
+        datos =
+            JSON.parse(texto);
 
-                if (!respuesta.ok) {
-
-                    throw new Error(
-                        "HTTP " +
-                        respuesta.status +
-                        ": " +
-                        texto
-                    );
-
-                }
-
-
-                return texto;
-
-            });
-
-    })
-
-
-    .then(function (texto) {
-
-        var albumes;
-
-
-        try {
-
-            albumes =
-                JSON.parse(texto);
-
-        } catch (error) {
-
-            console.error(
-                "ERROR PARSEANDO RESPUESTA:",
-                error
-            );
-
-            throw new Error(
-                "La respuesta de Supabase no es JSON válido."
-            );
-
-        }
-
-
-        console.log(
-            "ÁLBUM:",
-            albumes
-        );
-
-
-        if (
-            !albumes ||
-            albumes.length === 0
-        ) {
-
-            contenedor.innerHTML =
-                "<p>Álbum no encontrado.</p>";
-
-            return;
-
-        }
-
-
-        var album =
-            albumes[0];
-
-
-        var nombreArtista =
-            "Artista";
-
-
-        if (
-            album.perfiles &&
-            album.perfiles.nombre
-        ) {
-
-            nombreArtista =
-                album.perfiles.nombre;
-
-        }
-
-
-        var portadaHTML =
-            "";
-
-
-        if (album.portada_url) {
-
-            portadaHTML =
-                "<img src='" +
-                album.portada_url +
-                "' alt='" +
-                album.titulo +
-                "'>";
-
-        }
-
-
-        // =====================================================
-        // BUSCAR PREVIEW DEL ÁLBUM
-        // =====================================================
-
-        var urlCanciones =
-            URL_SUPABASE +
-            "/rest/v1/canciones" +
-            "?select=id,titulo,preview_path" +
-            "&album_id=eq." +
-            encodeURIComponent(idAlbum);
-
-
-        console.log(
-            "BUSCANDO CANCIONES:",
-            urlCanciones
-        );
-
-
-        fetch(
-            urlCanciones,
-            {
-                method: "GET",
-                headers: headers
-            }
-        )
-
-        .then(function (respuestaCanciones) {
-
-            console.log(
-                "RESPUESTA CANCIONES:",
-                respuestaCanciones.status
-            );
-
-
-            return respuestaCanciones.json();
-
-        })
-
-
-        .then(function (canciones) {
-
-            console.log(
-                "CANCIONES:",
-                canciones
-            );
-
-
-            var previewHTML =
-                "";
-
-
-            // =================================================
-            // SI HAY UNA CANCIÓN CON PREVIEW
-            // =================================================
-
-            if (
-                canciones &&
-                canciones.length > 0
-            ) {
-
-                var cancion =
-                    canciones[0];
-
-
-                if (
-                    cancion.preview_path
-                ) {
-
-                    var previewURL =
-                        URL_SUPABASE +
-                        "/storage/v1/object/public/previews/" +
-                        cancion.preview_path;
-
-
-                    previewHTML =
-
-                        "<div class='preview-player'>" +
-
-                            "<h3>Escuchar preview</h3>" +
-
-                            "<audio controls preload='metadata'>" +
-
-                                "<source src='" +
-                                previewURL +
-                                "' type='audio/mpeg'>" +
-
-                                "Tu navegador no soporta el reproductor de audio." +
-
-                            "</audio>" +
-
-                            "<p>Preview de 30 segundos</p>" +
-
-                        "</div>";
-
-                }
-
-            }
-
-
-            // =================================================
-            // MOSTRAR ÁLBUM
-            // =================================================
-
-            contenedor.innerHTML =
-
-                portadaHTML +
-
-                "<h1>" +
-                album.titulo +
-                "</h1>" +
-
-                "<h2>Por: " +
-                nombreArtista +
-                "</h2>" +
-
-                "<p>" +
-                (album.descripcion || "") +
-                "</p>" +
-
-                previewHTML +
-
-                "<p>$" +
-                album.precio +
-                "</p>" +
-
-                "<button id='boton-comprar'>" +
-                "Agregar al carrito" +
-                "</button>";
-
-
-            // =================================================
-            // BOTÓN COMPRAR
-            // =================================================
-
-            var botonComprar =
-                document.querySelector(
-                    "#boton-comprar"
-                );
-
-
-            if (!botonComprar) {
-
-                console.error(
-                    "NO SE ENCONTRÓ #boton-comprar"
-                );
-
-                return;
-
-            }
-
-
-            botonComprar.addEventListener(
-                "click",
-
-                function () {
-
-                    var carrito;
-
-
-                    try {
-
-                        carrito =
-                            JSON.parse(
-                                localStorage.getItem(
-                                    "carrito"
-                                )
-                            ) || [];
-
-                    } catch (error) {
-
-                        carrito = [];
-
-                    }
-
-
-                    var producto = {
-
-                        id:
-                            album.id,
-
-                        titulo:
-                            album.titulo,
-
-                        precio:
-                            album.precio,
-
-                        portada_url:
-                            album.portada_url,
-
-                        artista:
-                            nombreArtista
-
-                    };
-
-
-                    var yaExiste =
-                        false;
-
-
-                    for (
-                        var i = 0;
-                        i < carrito.length;
-                        i++
-                    ) {
-
-                        if (
-                            carrito[i].id ===
-                            producto.id
-                        ) {
-
-                            yaExiste =
-                                true;
-
-                            break;
-
-                        }
-
-                    }
-
-
-                    if (!yaExiste) {
-
-                        carrito.push(
-                            producto
-                        );
-
-
-                        localStorage.setItem(
-                            "carrito",
-
-                            JSON.stringify(
-                                carrito
-                            )
-                        );
-
-
-                        alert(
-                            "Álbum agregado al carrito."
-                        );
-
-
-                        window.location.href =
-                            "carrito.html";
-
-
-                    } else {
-
-                        alert(
-                            "Este álbum ya está en tu carrito."
-                        );
-
-
-                        window.location.href =
-                            "carrito.html";
-
-                    }
-
-                }
-
-            );
-
-        })
-
-        .catch(function (errorCanciones) {
-
-            console.error(
-                "ERROR AL CARGAR CANCIONES:",
-                errorCanciones
-            );
-
-
-            // Aunque falle la búsqueda del preview,
-            // el álbum sigue apareciendo.
-
-            contenedor.innerHTML =
-
-                portadaHTML +
-
-                "<h1>" +
-                album.titulo +
-                "</h1>" +
-
-                "<h2>Por: " +
-                nombreArtista +
-                "</h2>" +
-
-                "<p>" +
-                (album.descripcion || "") +
-                "</p>" +
-
-                "<p>$" +
-                album.precio +
-                "</p>" +
-
-                "<button id='boton-comprar'>" +
-                "Agregar al carrito" +
-                "</button>";
-
-        });
-
-    })
-
-
-    .catch(function (error) {
+    } catch (error) {
 
         console.error(
-            "ERROR AL CARGAR ÁLBUM:",
-            error
+            "ERROR JSON:",
+            texto
         );
-
 
         contenedor.innerHTML =
             "<p>Error al cargar el álbum.</p>";
 
-    });
+        return;
+
+    }
+
+
+    console.log(
+        "ÁLBUM:",
+        datos
+    );
+
+
+    if (
+        !datos ||
+        datos.length === 0
+    ) {
+
+        contenedor.innerHTML =
+            "<p>Álbum no encontrado.</p>";
+
+        return;
+
+    }
+
+
+    var album =
+        datos[0];
+
+
+    var nombreArtista =
+        "Artista";
+
+
+    if (
+        album.perfiles &&
+        album.perfiles.nombre
+    ) {
+
+        nombreArtista =
+            album.perfiles.nombre;
+
+    }
+
+
+    var portadaHTML =
+        "";
+
+
+    if (album.portada_url) {
+
+        portadaHTML =
+            "<img src='" +
+            album.portada_url +
+            "' alt='" +
+            album.titulo +
+            "'>";
+
+    }
+
+
+    var previewHTML =
+        "";
+
+
+    if (album.id == 1) {
+
+        var previewURL =
+            URL_SUPABASE +
+            "/storage/v1/object/public/previews/cancion-1.mp3";
+
+
+        previewHTML =
+
+            "<div class='preview-player'>" +
+
+            "<h3>Escuchar preview</h3>" +
+
+            "<audio controls preload='metadata'>" +
+
+            "<source src='" +
+            previewURL +
+            "' type='audio/mpeg'>" +
+
+            "Tu navegador no puede reproducir este audio." +
+
+            "</audio>" +
+
+            "<p>Preview de 30 segundos</p>" +
+
+            "</div>";
+
+    }
+
+
+    contenedor.innerHTML =
+
+        portadaHTML +
+
+        "<h1>" +
+        album.titulo +
+        "</h1>" +
+
+        "<h2>Por: " +
+        nombreArtista +
+        "</h2>" +
+
+        "<p>" +
+        (
+            album.descripcion ||
+            ""
+        ) +
+        "</p>" +
+
+        previewHTML +
+
+        "<p>$" +
+        album.precio +
+        "</p>" +
+
+        "<button id='boton-comprar'>" +
+        "Agregar al carrito" +
+        "</button>";
+
+
+    var botonComprar =
+        document.getElementById(
+            "boton-comprar"
+        );
+
+
+    botonComprar.addEventListener(
+        "click",
+        function() {
+
+            var carrito =
+                JSON.parse(
+                    localStorage.getItem(
+                        "carrito"
+                    )
+                ) || [];
+
+
+            var producto = {
+
+                id:
+                    album.id,
+
+                titulo:
+                    album.titulo,
+
+                precio:
+                    album.precio,
+
+                portada_url:
+                    album.portada_url,
+
+                artista:
+                    nombreArtista
+
+            };
+
+
+            var yaExiste =
+                carrito.some(
+                    function(item) {
+
+                        return item.id ==
+                            producto.id;
+
+                    }
+                );
+
+
+            if (yaExiste) {
+
+                mostrarNotificacion(
+                    "✓ Este álbum ya está en tu carrito"
+                );
+
+            } else {
+
+                carrito.push(
+                    producto
+                );
+
+
+                localStorage.setItem(
+                    "carrito",
+                    JSON.stringify(carrito)
+                );
+
+
+                mostrarNotificacion(
+                    "✓ Álbum agregado al carrito"
+                );
+
+            }
+
+
+            setTimeout(
+                function() {
+
+                    window.location.href =
+                        "./carrito.html";
+
+                },
+                900
+            );
+
+        }
+    );
+
+})
+
+.catch(function(error) {
+
+    console.error(
+        "ERROR:",
+        error
+    );
+
+    contenedor.innerHTML =
+        "<p>Error al cargar el álbum.</p>";
+
+});
+
+
+}
+
+/* =====================================================
+NOTIFICACIÓN
+===================================================== */
+
+function mostrarNotificacion(
+mensaje
+) {
+
+
+var notificacion =
+    document.createElement(
+        "div"
+    );
+
+
+notificacion.textContent =
+    mensaje;
+
+
+notificacion.style.position =
+    "fixed";
+
+notificacion.style.top =
+    "20px";
+
+notificacion.style.left =
+    "50%";
+
+notificacion.style.transform =
+    "translateX(-50%)";
+
+notificacion.style.background =
+    "#18181b";
+
+notificacion.style.color =
+    "#ffffff";
+
+notificacion.style.padding =
+    "10px 18px";
+
+notificacion.style.border =
+    "1px solid #27272a";
+
+notificacion.style.borderRadius =
+    "6px";
+
+notificacion.style.fontSize =
+    "13px";
+
+notificacion.style.zIndex =
+    "9999";
+
+notificacion.style.opacity =
+    "0";
+
+notificacion.style.transition =
+    "opacity 0.2s ease";
+
+
+document.body.appendChild(
+    notificacion
+);
+
+
+setTimeout(
+    function() {
+
+        notificacion.style.opacity =
+            "1";
+
+    },
+    10
+);
+
+
+setTimeout(
+    function() {
+
+        notificacion.style.opacity =
+            "0";
+
+        setTimeout(
+            function() {
+
+                notificacion.remove();
+
+            },
+            200
+        );
+
+    },
+    700
+);
+
 
 }

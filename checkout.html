@@ -7,71 +7,106 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Checkout — Marketplace Música</title>
+    <title>Checkout</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #111;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        #checkout {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 30px;
+            background: #1b1b1b;
+            border-radius: 10px;
+        }
+
+        h2 {
+            margin-top: 30px;
+        }
+
+        h3 {
+            margin-top: 30px;
+        }
+
+        .album-card {
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #222;
+            border-radius: 8px;
+        }
+
+        .album-card img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .album-card h3 {
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .precio {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #222;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #777;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 10px;
+            background: #fff;
+            color: #111;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #ddd;
+        }
+
+        a {
+            color: #fff;
+        }
+
+    </style>
 
 </head>
 
 <body>
 
-    <header>
+    <div id="checkout">
 
-        <div class="logo">
-            Marketplace Música
-        </div>
+        <p>Cargando checkout...</p>
 
-        <nav>
-
-            <a href="index.html">
-                Inicio
-            </a>
-
-            <a href="carrito.html">
-                Carrito
-            </a>
-
-            <a href="#">
-                Artistas
-            </a>
-
-            <a href="#">
-                Iniciar sesión
-            </a>
-
-        </nav>
-
-    </header>
-
-
-    <main>
-
-        <section>
-
-            <h1 class="section-title">
-                Finalizar compra
-            </h1>
-
-
-            <div id="checkout">
-
-                <p>
-                    Cargando compra...
-                </p>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <footer>
-
-        Marketplace Música — Música independiente.
-
-    </footer>
-
+    </div>
 
     <script src="js/checkout.js"></script>
 
