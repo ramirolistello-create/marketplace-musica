@@ -127,11 +127,26 @@ fetch(url, {
     if (album.portada_url) {
 
         portadaHTML =
-            "<img src='" +
+
+            "<img " +
+            "class='album-portada' " +
+            "src='" +
             album.portada_url +
-            "' alt='" +
+            "' " +
+            "alt='" +
             album.titulo +
             "'>";
+
+    } else {
+
+        portadaHTML =
+
+            "<div " +
+            "class='album-portada' " +
+            "style='display:flex;align-items:center;justify-content:center;background:#27272a;color:#71717a;font-size:13px;' " +
+            ">" +
+            "Sin portada" +
+            "</div>";
 
     }
 
@@ -151,19 +166,19 @@ fetch(url, {
 
             "<div class='preview-player'>" +
 
-            "<h3>Escuchar preview</h3>" +
+                "<h3>Escuchar preview</h3>" +
 
-            "<audio controls preload='metadata'>" +
+                "<audio controls preload='metadata'>" +
 
-            "<source src='" +
-            previewURL +
-            "' type='audio/mpeg'>" +
+                    "<source src='" +
+                    previewURL +
+                    "' type='audio/mpeg'>" +
 
-            "Tu navegador no puede reproducir este audio." +
+                    "Tu navegador no puede reproducir este audio." +
 
-            "</audio>" +
+                "</audio>" +
 
-            "<p>Preview de 30 segundos</p>" +
+                "<p>Preview de 30 segundos</p>" +
 
             "</div>";
 
@@ -172,32 +187,47 @@ fetch(url, {
 
     contenedor.innerHTML =
 
-        portadaHTML +
+        "<div class='album-detalle'>" +
 
-        "<h1>" +
-        album.titulo +
-        "</h1>" +
+            portadaHTML +
 
-        "<h2>Por: " +
-        nombreArtista +
-        "</h2>" +
+            "<div class='album-contenido'>" +
 
-        "<p>" +
-        (
-            album.descripcion ||
-            ""
-        ) +
-        "</p>" +
+                "<h1>" +
+                album.titulo +
+                "</h1>" +
 
-        previewHTML +
+                "<h2>Por: " +
+                nombreArtista +
+                "</h2>" +
 
-        "<p>$" +
-        album.precio +
-        "</p>" +
+                "<p>" +
+                (
+                    album.descripcion ||
+                    ""
+                ) +
+                "</p>" +
 
-        "<button id='boton-comprar'>" +
-        "Agregar al carrito" +
-        "</button>";
+                previewHTML +
+
+                "<div class='album-compra'>" +
+
+                    "<p class='precio'>" +
+                    "$" +
+                    album.precio +
+                    "</p>" +
+
+                    "<button " +
+                    "id='boton-comprar' " +
+                    "class='boton-comprar'>" +
+                    "Agregar al carrito" +
+                    "</button>" +
+
+                "</div>" +
+
+            "</div>" +
+
+        "</div>";
 
 
     var botonComprar =
@@ -398,6 +428,5 @@ setTimeout(
     },
     700
 );
-
 
 }
