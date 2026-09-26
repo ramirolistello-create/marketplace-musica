@@ -1,96 +1,1085 @@
+/* =====================================================
+RESET
+===================================================== */
+
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  }
+
+html {
+scroll-behavior: smooth;
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #0d0d0f;
-    color: #f2f2f2;
-    line-height: 1.5;
+background: #0f0f10;
+color: #f4f4f5;
+font-family: Arial, Helvetica, sans-serif;
+line-height: 1.5;
 }
 
-/* ============================= */
-/* HEADER */
-/* ============================= */
+a {
+color: inherit;
+text-decoration: none;
+}
+
+button,
+input {
+font-family: inherit;
+}
+
+/* =====================================================
+HEADER
+===================================================== */
 
 header {
-    width: 100%;
-    background: #111114;
-    border-bottom: 1px solid #242428;
-    padding: 18px 50px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+width: 100%;
+background: #111113;
+border-bottom: 1px solid #27272a;
+}
+
+.header-inner {
+max-width: 1200px;
+margin: 0 auto;
+min-height: 70px;
+padding: 0 24px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 30px;
 }
 
 .logo {
-    font-size: 21px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
+color: #ffffff;
+font-size: 20px;
+font-weight: 700;
+white-space: nowrap;
 }
 
-nav {
-    display: flex;
-    align-items: center;
-    gap: 26px;
+.logo:hover {
+color: #c4b5fd;
 }
 
-nav a {
-    color: #bdbdc3;
-    text-decoration: none;
-    font-size: 14px;
-    transition: color 0.2s ease;
+/* =====================================================
+NAVEGACIÓN
+===================================================== */
+
+.main-nav {
+display: flex;
+align-items: center;
+gap: 24px;
 }
 
-nav a:hover {
-    color: white;
+.nav-link {
+color: #a1a1aa;
+font-size: 14px;
+transition: color 0.2s ease;
 }
 
-.login {
-    color: white;
-    font-weight: 600;
+.nav-link:hover {
+color: #ffffff;
 }
 
-/* ============================= */
-/* CARRITO EN HEADER */
-/* ============================= */
+.nav-link.active {
+color: #ffffff;
+}
+
+/* =====================================================
+ACCIONES HEADER
+===================================================== */
+
+.header-actions {
+display: flex;
+align-items: center;
+gap: 18px;
+}
 
 .carrito-link {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+display: flex;
+align-items: center;
+gap: 7px;
+color: #a1a1aa;
+font-size: 14px;
+transition: color 0.2s ease;
+}
+
+.carrito-link:hover {
+color: #ffffff;
+}
+
+.cart-icon {
+font-size: 16px;
 }
 
 #contador-carrito {
-    background: #ffffff;
-    color: #111114;
-    min-width: 20px;
-    height: 20px;
-    padding: 0 5px;
-    border-radius: 10px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 11px;
-    font-weight: bold;
+min-width: 18px;
+height: 18px;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+padding: 0 5px;
+background: #8b5cf6;
+color: #ffffff;
+border-radius: 20px;
+font-size: 11px;
+font-weight: bold;
 }
 
-/* ============================= */
-/* CONTENIDO PRINCIPAL */
-/* ============================= */
+.login {
+color: #c4b5fd;
+font-size: 14px;
+}
+
+.login:hover {
+color: #ffffff;
+}
+
+/* =====================================================
+CONTENIDO GENERAL
+===================================================== */
 
 main {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 60px 30px;
+max-width: 1200px;
+margin: 0 auto;
+padding: 45px 24px 70px;
 }
 
-/* ============================= */
-/* HERO */
-/* =====*
+section {
+margin-bottom: 45px;
+}
+
+.section-title {
+margin-bottom: 25px;
+font-size: 26px;
+font-weight: 700;
+color: #ffffff;
+}
+
+/* =====================================================
+HERO
+===================================================== */
+
+.hero {
+padding: 65px 0 55px;
+}
+
+.hero h1 {
+max-width: 750px;
+margin-bottom: 20px;
+font-size: 48px;
+line-height: 1.1;
+letter-spacing: -1px;
+}
+
+.hero p {
+max-width: 650px;
+margin-bottom: 30px;
+color: #a1a1aa;
+font-size: 17px;
+}
+
+/* =====================================================
+BUSCADOR
+===================================================== */
+
+.search {
+max-width: 650px;
+display: flex;
+gap: 10px;
+}
+
+.search input {
+flex: 1;
+padding: 13px 16px;
+background: #18181b;
+color: #ffffff;
+border: 1px solid #27272a;
+border-radius: 7px;
+outline: none;
+}
+
+.search input:focus {
+border-color: #8b5cf6;
+}
+
+.search button {
+padding: 13px 22px;
+background: #8b5cf6;
+color: #ffffff;
+border: none;
+border-radius: 7px;
+cursor: pointer;
+}
+
+.search button:hover {
+background: #7c3aed;
+}
+
+/* =====================================================
+ÁLBUMES
+===================================================== */
+
+.albums {
+display: flex;
+flex-direction: column;
+gap: 12px;
+}
+
+/* TARJETA DE ÁLBUM */
+
+.albums .album-card {
+position: relative;
+display: flex;
+align-items: center;
+min-height: 108px;
+padding: 14px;
+background: #18181b;
+border: 1px solid #27272a;
+border-radius: 10px;
+overflow: visible;
+transition:
+border-color 0.2s ease,
+transform 0.2s ease;
+}
+
+.albums .album-card:hover {
+border-color: #8b5cf6;
+transform: translateY(-2px);
+}
+
+/* IMAGEN DEL ÁLBUM */
+
+.albums .album-card > img {
+width: 80px;
+height: 80px;
+flex-shrink: 0;
+object-fit: cover;
+border-radius: 6px;
+}
+
+/* INFORMACIÓN */
+
+.albums .album-card h3 {
+margin: 0 0 5px 0;
+padding: 0 0 0 15px;
+font-size: 16px;
+}
+
+.albums .album-card > p {
+margin: 3px 0;
+padding: 0 0 0 15px;
+color: #a1a1aa;
+font-size: 13px;
+}
+
+.albums .album-card .precio {
+margin: 7px 0 0 15px;
+padding: 0;
+color: #c4b5fd;
+font-size: 15px;
+font-weight: bold;
+}
+
+/* BOTÓN COMPRAR */
+
+.albums .boton-comprar {
+margin: 0 0 0 auto;
+padding: 8px 14px;
+background: #8b5cf6;
+color: #ffffff;
+border-radius: 6px;
+font-size: 13px;
+font-weight: 600;
+white-space: nowrap;
+}
+
+.albums .boton-comprar:hover {
+background: #7c3aed;
+}
+
+/* =====================================================
+PÁGINA DEL ÁLBUM
+===================================================== */
+
+#album {
+max-width: 900px;
+margin: 0 auto;
+}
+
+#album .album-card {
+overflow: hidden;
+}
+
+.album-detalle {
+display: grid;
+grid-template-columns: 300px 1fr;
+gap: 30px;
+}
+
+.album-detalle img {
+width: 100%;
+border-radius: 8px;
+}
+
+.album-detalle-info h1 {
+margin-bottom: 12px;
+font-size: 32px;
+}
+
+.album-detalle-info p {
+margin-bottom: 12px;
+color: #a1a1aa;
+}
+
+.album-detalle-info .precio {
+margin: 20px 0;
+color: #c4b5fd;
+font-size: 24px;
+font-weight: bold;
+}
+
+/* =====================================================
+PREVIEW
+===================================================== */
+
+.preview {
+margin-top: 25px;
+padding: 20px;
+background: #18181b;
+border: 1px solid #27272a;
+border-radius: 10px;
+}
+
+.preview audio {
+width: 100%;
+}
+
+/* =====================================================
+BOTONES GENERALES
+===================================================== */
+
+button {
+border: none;
+}
+
+.boton {
+display: inline-block;
+padding: 10px 18px;
+background: #8b5cf6;
+color: #ffffff;
+border-radius: 6px;
+cursor: pointer;
+font-size: 14px;
+font-weight: 600;
+}
+
+.boton:hover {
+background: #7c3aed;
+}
+
+/* =====================================================
+CARRITO
+===================================================== */
+
+#carrito .album-card {
+position: relative;
+display: flex;
+align-items: center;
+gap: 15px;
+padding: 14px;
+margin-bottom: 12px;
+background: #18181b;
+border: 1px solid #27272a;
+border-radius: 10px;
+overflow: visible;
+}
+
+#carrito .album-info {
+display: flex;
+align-items: center;
+gap: 15px;
+flex: 1;
+}
+
+#carrito .album-info img {
+width: 80px;
+height: 80px;
+object-fit: cover;
+border-radius: 6px;
+flex-shrink: 0;
+}
+
+#carrito .album-info h3 {
+margin: 0 0 5px 0;
+font-size: 16px;
+}
+
+#carrito .album-info p {
+margin: 3px 0;
+color: #a1a1aa;
+font-size: 13px;
+}
+
+#carrito .album-info .precio {
+margin-top: 7px;
+color: #c4b5fd;
+font-size: 15px;
+font-weight: bold;
+}
+
+/* =====================================================
+ELIMINAR DEL CARRITO
+===================================================== */
+
+#carrito .boton-eliminar {
+position: absolute;
+top: 8px;
+right: 8px;
+width: 22px;
+height: 22px;
+padding: 0;
+background: transparent;
+color: #a855f7;
+border: none;
+border-radius: 50%;
+font-size: 20px;
+font-weight: 400;
+line-height: 20px;
+cursor: pointer;
+transition:
+color 0.2s ease,
+transform 0.2s ease;
+}
+
+#carrito .boton-eliminar:hover {
+background: transparent;
+color: #c084fc;
+transform: scale(1.1);
+}
+
+/* =====================================================
+RESUMEN CARRITO
+===================================================== */
+
+#carrito .resumen-carrito {
+margin-top: 20px;
+padding: 18px;
+background: #18181b;
+border: 1px solid #27272a;
+border-radius: 10px;
+}
+
+#carrito .resumen-carrito h2 {
+margin: 0 0 15px 0;
+font-size: 19px;
+}
+
+/* =====================================================
+PAGAR
+===================================================== */
+
+#carrito #boton-pagar {
+width: auto;
+padding: 10px 22px;
+background: #8b5cf6;
+color: #ffffff;
+border: none;
+border-radius: 20px;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+transition:
+background 0.2s ease,
+transform 0.2s ease;
+}
+
+#carrito #boton-pagar:hover {
+background: #7c3aed;
+transform: translateY(-1px);
+}
+
+/* =====================================================
+CARRITO VACÍO
+===================================================== */
+
+#carrito .carrito-vacio {
+padding: 40px 20px;
+text-align: center;
+background: #18181b;
+border: 1px solid #27272a;
+border-radius: 10px;
+}
+
+#carrito .carrito-vacio h2 {
+margin-bottom: 10px;
+}
+
+#carrito .carrito-vacio p {
+margin-bottom: 18px;
+color: #a1a1aa;
+}
+
+#carrito .carrito-vacio a {
+color: #c4b5fd;
+}
+
+#carrito .carrito-vacio a:hover {
+color: #ffffff;
+}
+
+/* =====================================================
+CHECKOUT
+===================================================== */
+
+#checkout {
+max-width: 650px;
+margin: 40px auto;
+padding: 30px;
+background: #18181b;
+border: 1px solid #27272a;
+border-radius: 10px;
+}
+
+#checkout input {
+width: 100%;
+padding: 12px;
+margin-bottom: 15px;
+background: #111113;
+color: #ffffff;
+border: 1px solid #27272a;
+border-radius: 6px;
+outline: none;
+}
+
+#checkout input:focus {
+border-color: #8b5cf6;
+}
+
+#checkout button {
+width: 100%;
+padding: 12px;
+background: #8b5cf6;
+color: #ffffff;
+border-radius: 6px;
+cursor: pointer;
+}
+
+#checkout button:hover {
+background: #7c3aed;
+}
+
+/* =====================================================
+LOGIN
+===================================================== */
+
+.login-container {
+max-width: 420px;
+margin: 50px auto;
+padding: 30px;
+background: #18181b;
+border: 1px solid #27272a;
+border-radius: 10px;
+}
+
+.login-container h1 {
+margin-bottom: 25px;
+}
+
+.login-container input {
+width: 100%;
+padding: 12px;
+margin-bottom: 15px;
+background: #111113;
+color: #ffffff;
+border: 1px solid #27272a;
+border-radius: 6px;
+outline: none;
+}
+
+.login-container input:focus {
+border-color: #8b5cf6;
+}
+
+.login-container button {
+width: 100%;
+padding: 12px;
+background: #8b5cf6;
+color: #ffffff;
+border-radius: 6px;
+cursor: pointer;
+}
+
+.login-container button:hover {
+background: #7c3aed;
+}
+
+/* =====================================================
+BIBLIOTECA
+===================================================== */
+
+#biblioteca {
+display: grid;
+grid-template-columns:
+repeat(auto-fill, minmax(230px, 1fr));
+gap: 20px;
+}
+
+.biblioteca-card {
+position: relative;
+background: #18181b;
+border: 1px solid #27272a;
+border-radius: 10px;
+overflow: hidden;
+}
+
+.biblioteca-card img {
+width: 100%;
+aspect-ratio: 1 / 1;
+object-fit: cover;
+}
+
+.biblioteca-card h3 {
+padding: 15px 15px 5px;
+font-size: 17px;
+}
+
+.biblioteca-card p {
+padding: 0 15px;
+color: #a1a1aa;
+font-size: 14px;
+}
+
+.estado-compra {
+color: #a78bfa !important;
+font-size: 13px !important;
+margin-top: 10px;
+margin-bottom: 10px;
+}
+
+.boton-descargar {
+margin: 10px 15px 15px;
+padding: 9px 15px;
+background: #8b5cf6;
+color: #ffffff;
+border-radius: 6px;
+cursor: pointer;
+}
+
+.boton-descargar:hover {
+background: #7c3aed;
+}
+
+/* =====================================================
+ELIMINAR DE BIBLIOTECA
+===================================================== */
+
+.boton-eliminar-biblioteca {
+position: absolute;
+top: 10px;
+right: 10px;
+width: 24px;
+height: 24px;
+padding: 0;
+background: rgba(0, 0, 0, 0.7);
+color: #c084fc;
+border: none;
+border-radius: 50%;
+font-size: 18px;
+line-height: 24px;
+cursor: pointer;
+z-index: 2;
+}
+
+.boton-eliminar-biblioteca:hover {
+color: #ffffff;
+}
+
+/* =====================================================
+ARTISTAS
+===================================================== */
+
+.artist-profile {
+margin-bottom: 35px;
+}
+
+.artist-card {
+display: flex;
+align-items: center;
+gap: 25px;
+padding: 25px;
+background: #18181b;
+border: 1px solid #27272a;
+border-radius: 10px;
+}
+
+.artist-card img {
+width: 120px;
+height: 120px;
+object-fit: cover;
+border-radius: 50%;
+}
+
+.artist-card-info h1 {
+margin-bottom: 5px;
+font-size: 30px;
+}
+
+.artist-card-info p {
+color: #a1a1aa;
+}
+
+.artist-albums {
+margin-top: 30px;
+}
+
+/* =====================================================
+MENSAJES
+===================================================== */
+
+#artista p,
+#albumes-artista > p,
+#biblioteca > p {
+color: #a1a1aa;
+}
+
+.biblioteca-vacia {
+grid-column: 1 / -1;
+padding: 40px 20px;
+text-align: center;
+color: #a1a1aa;
+}
+
+/* =====================================================
+FOOTER
+===================================================== */
+
+footer {
+padding: 25px 24px;
+border-top: 1px solid #27272a;
+text-align: center;
+color: #71717a;
+font-size: 13px;
+}
+
+/* =====================================================
+RESPONSIVE
+===================================================== */
+
+@media (max-width: 850px) {
+
+
+.header-inner {
+    flex-wrap: wrap;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.main-nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    gap: 18px;
+}
+
+.header-actions {
+    margin-left: auto;
+}
+
+.hero h1 {
+    font-size: 38px;
+}
+
+.album-detalle {
+    grid-template-columns: 1fr;
+}
+
+
+}
+
+/* =====================================================
+MÓVIL
+===================================================== */
+
+@media (max-width: 600px) {
+
+
+.header-inner {
+    gap: 15px;
+}
+
+.logo {
+    font-size: 18px;
+}
+
+.main-nav {
+    overflow-x: auto;
+    justify-content: flex-start;
+}
+
+.header-actions {
+    width: 100%;
+    justify-content: space-between;
+}
+
+main {
+    padding: 30px 16px 50px;
+}
+
+.hero {
+    padding: 35px 0;
+}
+
+.hero h1 {
+    font-size: 32px;
+}
+
+.hero p {
+    font-size: 15px;
+}
+
+.search {
+    flex-direction: column;
+}
+
+
+/* ÁLBUMES EN MÓVIL */
+
+.albums .album-card {
+    min-height: 90px;
+    padding: 10px;
+}
+
+.albums .album-card > img {
+    width: 65px;
+    height: 65px;
+}
+
+.albums .album-card h3 {
+    padding-left: 12px;
+    font-size: 15px;
+}
+
+.albums .album-card > p {
+    padding-left: 12px;
+    font-size: 12px;
+}
+
+.albums .album-card .precio {
+    margin-left: 12px;
+    font-size: 14px;
+}
+
+.albums .boton-comprar {
+    padding: 7px 10px;
+    font-size: 12px;
+}
+
+
+/* BIBLIOTECA */
+
+#biblioteca {
+    grid-template-columns: 1fr;
+}
+
+
+/* ARTISTA */
+
+.artist-card {
+    flex-direction: column;
+    text-align: center;
+}
+
+
+/* CARRITO */
+
+#carrito .album-info img {
+    width: 65px;
+    height: 65px;
+}
+
+#carrito .album-info {
+    gap: 12px;
+}
+
+#carrito .album-info h3 {
+    font-size: 15px;
+}
+
+
+}
+
+/* =====================================================
+BOTÓN VER - ÁLBUMES
+===================================================== */
+
+.albums .boton-ver {
+margin-left: auto;
+padding: 8px 16px;
+background: #8b5cf6;
+color: #ffffff;
+border-radius: 6px;
+font-size: 13px;
+font-weight: 600;
+white-space: nowrap;
+transition: background 0.2s ease;
+}
+
+.albums .boton-ver:hover {
+background: #7c3aed;
+}
+
+/* =====================================================
+DETALLE DEL ÁLBUM - DISEÑO COMPACTO
+===================================================== */
+
+#album {
+max-width: 720px;
+margin: 0 auto;
+padding: 25px 0;
+}
+
+#album .album-detalle {
+display: flex;
+align-items: flex-start;
+gap: 28px;
+padding: 20px;
+background: #18181b;
+border: 1px solid #27272a;
+border-radius: 10px;
+}
+
+#album .album-portada {
+width: 220px;
+height: 220px;
+flex-shrink: 0;
+object-fit: cover;
+border-radius: 7px;
+}
+
+#album .album-contenido {
+flex: 1;
+min-width: 0;
+}
+
+#album h1 {
+margin: 3px 0 5px 0;
+font-size: 25px;
+line-height: 1.2;
+}
+
+#album .album-artista {
+margin-bottom: 14px;
+color: #a1a1aa;
+font-size: 14px;
+}
+
+#album .album-descripcion {
+margin: 0 0 18px 0;
+color: #a1a1aa;
+font-size: 13px;
+line-height: 1.5;
+}
+
+#album .preview-player {
+padding: 13px;
+margin-top: 10px;
+background: #111113;
+border: 1px solid #27272a;
+border-radius: 7px;
+}
+
+#album .preview-titulo {
+margin-bottom: 8px;
+color: #e4e4e7;
+font-size: 13px;
+font-weight: 600;
+}
+
+#album audio {
+display: block;
+width: 100%;
+height: 34px;
+}
+
+#album .preview-duracion {
+margin-top: 6px;
+color: #71717a;
+font-size: 11px;
+}
+
+#album .album-compra {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 15px;
+margin-top: 18px;
+}
+
+#album .album-precio {
+color: #c4b5fd;
+font-size: 20px;
+font-weight: bold;
+}
+
+#album #boton-comprar {
+padding: 9px 16px;
+background: #8b5cf6;
+color: #ffffff;
+border: none;
+border-radius: 6px;
+font-size: 13px;
+font-weight: 600;
+cursor: pointer;
+transition:
+background 0.2s ease,
+transform 0.2s ease;
+}
+
+#album #boton-comprar:hover {
+background: #7c3aed;
+transform: translateY(-1px);
+}
+
+/* =====================================================
+MÓVIL - DETALLE DEL ÁLBUM
+===================================================== */
+
+@media (max-width: 650px) {
+
+
+#album {
+    padding: 15px 10px;
+}
+
+#album .album-detalle {
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    gap: 18px;
+}
+
+#album .album-portada {
+    width: 180px;
+    height: 180px;
+}
+
+#album .album-contenido {
+    width: 100%;
+    text-align: center;
+}
+
+#album h1 {
+    font-size: 22px;
+}
+
+#album .album-compra {
+    justify-content: center;
+}
+
+#album .preview-player {
+    text-align: left;
+}
+
+
+}
