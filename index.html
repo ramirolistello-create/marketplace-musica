@@ -1,67 +1,133 @@
 <!DOCTYPE html>
-
 <html lang="es">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>Marketplace Música</title>
+    <title>Marketplace Música</title>
 
-<link rel="stylesheet" href="css/style.css">
-
+    <link
+        rel="stylesheet"
+        href="css/style.css?v=10"
+    >
 
 </head>
 
 <body>
 
-
 <header>
 
-    <div class="logo">
-        Marketplace Música
+    <div class="header-inner">
+
+        <a
+            href="./index.html"
+            class="logo"
+        >
+            Marketplace Música
+        </a>
+
+
+        <nav class="main-nav">
+
+            <a
+                href="./index.html"
+                class="nav-link active"
+            >
+                Inicio
+            </a>
+
+            <a
+                href="./albumes.html"
+                class="nav-link"
+            >
+                Álbumes
+            </a>
+
+            <a
+                href="./artistas.html"
+                class="nav-link"
+            >
+                Artistas
+            </a>
+
+            <a
+                href="./biblioteca.html"
+                class="nav-link"
+            >
+                Mi biblioteca
+            </a>
+
+        </nav>
+
+
+        <div class="header-actions">
+
+            <a
+                href="./carrito.html"
+                class="carrito-link"
+            >
+
+                <span class="cart-icon">
+                    🛒
+                </span>
+
+                <span>
+                    Carrito
+                </span>
+
+                <span id="contador-carrito">
+                    0
+                </span>
+
+            </a>
+
+
+            <a
+                href="./login.html"
+                class="login"
+                id="usuarioSesion"
+            >
+                Iniciar sesión
+            </a>
+
+        </div>
+
     </div>
 
-    <nav>
-        <a href="#">Inicio</a>
-        <a href="#">Álbumes</a>
-        <a href="#">Artistas</a>
-        <a href="biblioteca.html">Mi biblioteca</a>
-
-        <a href="carrito.html" class="carrito-link">
-            🛒 Carrito
-            <span id="contador-carrito">0</span>
-        </a>
-
-        <a href="login.html" class="login" id="usuarioSesion">
-            Iniciar sesión
-        </a>
-    </nav>
-
 </header>
+
 
 <main>
 
     <section class="hero">
 
         <h1>
-            Música independiente,
+            Música independiente,<br>
             directamente de sus artistas.
         </h1>
+
 
         <p>
             Descubrí nuevos artistas, escuchá su música
             y comprá sus álbumes directamente.
         </p>
 
+
         <div class="search">
 
             <input
                 type="text"
                 placeholder="Buscar artistas o álbumes..."
+                aria-label="Buscar artistas o álbumes"
             >
 
-            <button>
+            <button type="button">
                 Buscar
             </button>
 
@@ -69,19 +135,20 @@
 
     </section>
 
+
     <section>
 
         <h2 class="section-title">
             Álbumes destacados
         </h2>
 
-        <div class="albums">
 
-        </div>
+        <div class="albums"></div>
 
     </section>
 
 </main>
+
 
 <footer>
 
@@ -89,8 +156,9 @@
 
 </footer>
 
-<script src="js/app.js"></script>
 
+<script src="./js/app.js?v=1"></script>
 
 </body>
+
 </html>
