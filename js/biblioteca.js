@@ -18,69 +18,71 @@ COMPROBAR SESIÓN
 
 if (!token) {
 
+console.log(
+"NO HAY SESIÓN"
+);
+
+if (contenedor) {
+
+
+contenedor.innerHTML =
+    "<p>Debes iniciar sesión para ver tu biblioteca.</p>";
+
+
+}
+
+} else {
+
+try {
+
+
+var partes =
+    token.split(".");
+
+var payload =
+    JSON.parse(
+        atob(
+            partes[1]
+                .replace(/-/g, "+")
+                .replace(/_/g, "/")
+        )
+    );
+
+var usuarioAuthId =
+    payload.sub;
 
 console.log(
-    "NO HAY SESIÓN"
+    "USUARIO AUTH:",
+    usuarioAuthId
+);
+
+console.log(
+    "CORREO:",
+    payload.email
+);
+
+cargarBiblioteca(
+    usuarioAuthId
+);
+
+
+} catch (error) {
+
+
+console.error(
+    "ERROR LEYENDO TOKEN:",
+    error
 );
 
 if (contenedor) {
 
     contenedor.innerHTML =
-        "<p>Debes iniciar sesión para ver tu biblioteca.</p>";
+        "<p>La sesión no es válida. Vuelve a iniciar sesión.</p>";
 
 }
 
 
-} else {
-
-
-try {
-
-    var partes =
-        token.split(".");
-
-    var payload =
-        JSON.parse(
-            atob(
-                partes[1]
-                    .replace(/-/g, "+")
-                    .replace(/_/g, "/")
-            )
-        );
-
-    var usuarioAuthId =
-        payload.sub;
-
-    console.log(
-        "USUARIO AUTH:",
-        usuarioAuthId
-    );
-
-    console.log(
-        "CORREO:",
-        payload.email
-    );
-
-    cargarBiblioteca(
-        usuarioAuthId
-    );
-
-} catch (error) {
-
-    console.error(
-        "ERROR LEYENDO TOKEN:",
-        error
-    );
-
-    if (contenedor) {
-
-        contenedor.innerHTML =
-            "<p>La sesión no es válida. Vuelve a iniciar sesión.</p>";
-
-    }
-
 }
-
 
 }
 
@@ -92,137 +94,141 @@ function cargarBiblioteca(
 usuarioAuthId
 ) {
 
-
 console.log(
-    "BUSCANDO PERFIL:",
-    usuarioAuthId
+"BUSCANDO PERFIL:",
+usuarioAuthId
 );
 
 var urlPerfil =
-    URL_SUPABASE +
-    "/rest/v1/perfiles?select=id,nombre,usuario_id&usuario_id=eq." +
-    encodeURIComponent(
-        usuarioAuthId
-    );
+URL_SUPABASE +
+"/rest/v1/perfiles?select=id,nombre,usuario_id&usuario_id=eq." +
+encodeURIComponent(
+usuarioAuthId
+);
 
 var solicitudPerfil =
-    new XMLHttpRequest();
+new XMLHttpRequest();
 
 solicitudPerfil.open(
-    "GET",
-    urlPerfil,
-    true
+"GET",
+urlPerfil,
+true
 );
 
 solicitudPerfil.setRequestHeader(
-    "apikey",
-    KEY_SUPABASE
+"apikey",
+KEY_SUPABASE
 );
 
 solicitudPerfil.setRequestHeader(
-    "Authorization",
-    "Bearer " + token
+"Authorization",
+"Bearer " + token
 );
 
 solicitudPerfil.addEventListener(
-    "load",
-    function() {
+"load",
+function() {
 
-        console.log(
-            "RESPUESTA PERFIL:",
-            solicitudPerfil.status
-        );
 
-        if (
-            solicitudPerfil.status !== 200
-        ) {
+    console.log(
+        "RESPUESTA PERFIL:",
+        solicitudPerfil.status
+    );
 
-            if (contenedor) {
+    if (
+        solicitudPerfil.status !== 200
+    ) {
 
-                contenedor.innerHTML =
-                    "<p>No se pudo cargar tu perfil.</p>";
+        if (contenedor) {
 
-            }
-
-            return;
+            contenedor.innerHTML =
+                "<p>No se pudo cargar tu perfil.</p>";
 
         }
 
-        var perfiles;
-
-        try {
-
-            perfiles =
-                JSON.parse(
-                    solicitudPerfil.responseText
-                );
-
-        } catch (error) {
-
-            console.error(
-                "ERROR PARSEANDO PERFIL:",
-                error
-            );
-
-            return;
-
-        }
-
-        if (
-            !perfiles ||
-            perfiles.length === 0
-        ) {
-
-            console.log(
-                "NO SE ENCONTRÓ PERFIL"
-            );
-
-            if (contenedor) {
-
-                contenedor.innerHTML =
-                    "<p>No se encontró tu perfil.</p>";
-
-            }
-
-            return;
-
-        }
-
-        var perfilId =
-            perfiles[0].id;
-
-        console.log(
-            "ID PERFIL:",
-            perfilId
-        );
-
-        cargarCompras(
-            perfilId
-        );
+        return;
 
     }
-);
 
-solicitudPerfil.addEventListener(
-    "error",
-    function() {
+    var perfiles;
+
+    try {
+
+        perfiles =
+            JSON.parse(
+                solicitudPerfil.responseText
+            );
+
+    } catch (error) {
 
         console.error(
-            "ERROR DE CONEXIÓN CON PERFIL"
+            "ERROR PARSEANDO PERFIL:",
+            error
+        );
+
+        return;
+
+    }
+
+    if (
+        !perfiles ||
+        perfiles.length === 0
+    ) {
+
+        console.log(
+            "NO SE ENCONTRÓ PERFIL"
         );
 
         if (contenedor) {
 
             contenedor.innerHTML =
-                "<p>No se pudo conectar con Supabase.</p>";
+                "<p>No se encontró tu perfil.</p>";
 
         }
 
+        return;
+
     }
+
+    var perfilId =
+        perfiles[0].id;
+
+    console.log(
+        "ID PERFIL:",
+        perfilId
+    );
+
+    cargarCompras(
+        perfilId
+    );
+
+}
+
+
+);
+
+solicitudPerfil.addEventListener(
+"error",
+function() {
+
+
+    console.error(
+        "ERROR DE CONEXIÓN CON PERFIL"
+    );
+
+    if (contenedor) {
+
+        contenedor.innerHTML =
+            "<p>No se pudo conectar con Supabase.</p>";
+
+    }
+
+}
+
+
 );
 
 solicitudPerfil.send();
-
 
 }
 
@@ -234,144 +240,148 @@ function cargarCompras(
 perfilId
 ) {
 
-
 console.log(
-    "BUSCANDO COMPRAS DEL PERFIL:",
-    perfilId
+"BUSCANDO COMPRAS DEL PERFIL:",
+perfilId
 );
 
 var urlCompras =
-    URL_SUPABASE +
-    "/rest/v1/compras?select=id,album_id,precio_pagado,estado,created_at&usuario_id=eq." +
-    encodeURIComponent(
-        perfilId
-    ) +
-    "&estado=eq.aprobado&order=created_at.desc";
+URL_SUPABASE +
+"/rest/v1/compras?select=id,album_id,precio_pagado,estado,created_at&usuario_id=eq." +
+encodeURIComponent(
+perfilId
+) +
+"&estado=eq.aprobado&order=created_at.desc";
 
 var solicitudCompras =
-    new XMLHttpRequest();
+new XMLHttpRequest();
 
 solicitudCompras.open(
-    "GET",
-    urlCompras,
-    true
+"GET",
+urlCompras,
+true
 );
 
 solicitudCompras.setRequestHeader(
-    "apikey",
-    KEY_SUPABASE
+"apikey",
+KEY_SUPABASE
 );
 
 solicitudCompras.setRequestHeader(
-    "Authorization",
-    "Bearer " + token
+"Authorization",
+"Bearer " + token
 );
 
 solicitudCompras.addEventListener(
-    "load",
-    function() {
+"load",
+function() {
 
-        console.log(
-            "RESPUESTA COMPRAS:",
-            solicitudCompras.status
-        );
 
-        if (
-            solicitudCompras.status !== 200
-        ) {
+    console.log(
+        "RESPUESTA COMPRAS:",
+        solicitudCompras.status
+    );
 
-            if (contenedor) {
-
-                contenedor.innerHTML =
-                    "<p>No se pudieron cargar tus compras.</p>";
-
-            }
-
-            return;
-
-        }
-
-        var compras;
-
-        try {
-
-            compras =
-                JSON.parse(
-                    solicitudCompras.responseText
-                );
-
-        } catch (error) {
-
-            console.error(
-                "ERROR PARSEANDO COMPRAS:",
-                error
-            );
-
-            return;
-
-        }
-
-        if (
-            !compras ||
-            compras.length === 0
-        ) {
-
-            if (contenedor) {
-
-                contenedor.innerHTML =
-                    "<p>Todavía no tienes compras.</p>";
-
-            }
-
-            return;
-
-        }
-
-        console.log(
-            "COMPRAS ENCONTRADAS:",
-            compras
-        );
-
-        if (contenedor) {
-
-            contenedor.innerHTML = "";
-
-        }
-
-        compras.forEach(
-            function(compra) {
-
-                cargarAlbum(
-                    compra.album_id,
-                    compra
-                );
-
-            }
-        );
-
-    }
-);
-
-solicitudCompras.addEventListener(
-    "error",
-    function() {
-
-        console.error(
-            "ERROR DE CONEXIÓN CON COMPRAS"
-        );
+    if (
+        solicitudCompras.status !== 200
+    ) {
 
         if (contenedor) {
 
             contenedor.innerHTML =
-                "<p>No se pudo conectar con Supabase.</p>";
+                "<p>No se pudieron cargar tus compras.</p>";
 
         }
 
+        return;
+
     }
+
+    var compras;
+
+    try {
+
+        compras =
+            JSON.parse(
+                solicitudCompras.responseText
+            );
+
+    } catch (error) {
+
+        console.error(
+            "ERROR PARSEANDO COMPRAS:",
+            error
+        );
+
+        return;
+
+    }
+
+    if (
+        !compras ||
+        compras.length === 0
+    ) {
+
+        if (contenedor) {
+
+            contenedor.innerHTML =
+                "<p>Todavía no tienes compras.</p>";
+
+        }
+
+        return;
+
+    }
+
+    console.log(
+        "COMPRAS ENCONTRADAS:",
+        compras
+    );
+
+    if (contenedor) {
+
+        contenedor.innerHTML = "";
+
+    }
+
+    compras.forEach(
+        function(compra) {
+
+            cargarAlbum(
+                compra.album_id,
+                compra
+            );
+
+        }
+    );
+
+}
+
+
+);
+
+solicitudCompras.addEventListener(
+"error",
+function() {
+
+
+    console.error(
+        "ERROR DE CONEXIÓN CON COMPRAS"
+    );
+
+    if (contenedor) {
+
+        contenedor.innerHTML =
+            "<p>No se pudo conectar con Supabase.</p>";
+
+    }
+
+}
+
+
 );
 
 solicitudCompras.send();
-
 
 }
 
@@ -384,109 +394,113 @@ albumId,
 compra
 ) {
 
-
 console.log(
-    "BUSCANDO ÁLBUM:",
-    albumId
+"BUSCANDO ÁLBUM:",
+albumId
 );
 
 var urlAlbum =
-    URL_SUPABASE +
-    "/rest/v1/albumes?select=id,titulo,descripcion,precio,portada_url&id=eq." +
-    encodeURIComponent(
-        albumId
-    );
+URL_SUPABASE +
+"/rest/v1/albumes?select=id,titulo,descripcion,precio,portada_url&id=eq." +
+encodeURIComponent(
+albumId
+);
 
 var solicitudAlbum =
-    new XMLHttpRequest();
+new XMLHttpRequest();
 
 solicitudAlbum.open(
-    "GET",
-    urlAlbum,
-    true
+"GET",
+urlAlbum,
+true
 );
 
 solicitudAlbum.setRequestHeader(
-    "apikey",
-    KEY_SUPABASE
+"apikey",
+KEY_SUPABASE
 );
 
 solicitudAlbum.setRequestHeader(
-    "Authorization",
-    "Bearer " + token
+"Authorization",
+"Bearer " + token
 );
 
 solicitudAlbum.addEventListener(
-    "load",
-    function() {
+"load",
+function() {
 
-        console.log(
-            "RESPUESTA ÁLBUM:",
-            solicitudAlbum.status
-        );
 
-        if (
-            solicitudAlbum.status !== 200
-        ) {
+    console.log(
+        "RESPUESTA ÁLBUM:",
+        solicitudAlbum.status
+    );
 
-            return;
+    if (
+        solicitudAlbum.status !== 200
+    ) {
 
-        }
-
-        var albumes;
-
-        try {
-
-            albumes =
-                JSON.parse(
-                    solicitudAlbum.responseText
-                );
-
-        } catch (error) {
-
-            console.error(
-                "ERROR PARSEANDO ÁLBUM:",
-                error
-            );
-
-            return;
-
-        }
-
-        if (
-            !albumes ||
-            albumes.length === 0
-        ) {
-
-            console.log(
-                "NO SE ENCONTRÓ EL ÁLBUM"
-            );
-
-            return;
-
-        }
-
-        mostrarAlbum(
-            albumes[0],
-            compra
-        );
+        return;
 
     }
-);
 
-solicitudAlbum.addEventListener(
-    "error",
-    function() {
+    var albumes;
+
+    try {
+
+        albumes =
+            JSON.parse(
+                solicitudAlbum.responseText
+            );
+
+    } catch (error) {
 
         console.error(
-            "ERROR DE CONEXIÓN CON ÁLBUM"
+            "ERROR PARSEANDO ÁLBUM:",
+            error
         );
 
+        return;
+
     }
+
+    if (
+        !albumes ||
+        albumes.length === 0
+    ) {
+
+        console.log(
+            "NO SE ENCONTRÓ EL ÁLBUM"
+        );
+
+        return;
+
+    }
+
+    mostrarAlbum(
+        albumes[0],
+        compra
+    );
+
+}
+
+
+);
+
+solicitudAlbum.addEventListener(
+"error",
+function() {
+
+
+    console.error(
+        "ERROR DE CONEXIÓN CON ÁLBUM"
+    );
+
+}
+
+
 );
 
 solicitudAlbum.send();
-
 
 }
 
@@ -499,138 +513,133 @@ album,
 compra
 ) {
 
-
 if (!contenedor) {
-    return;
+return;
 }
 
 var tarjeta =
-    document.createElement("div");
+document.createElement("div");
 
 tarjeta.className =
-    "biblioteca-card";
-
+"biblioteca-card";
 
 /* =================================================
-   PORTADA
+PORTADA
 ================================================= */
 
 if (
-    album.portada_url
+album.portada_url
 ) {
 
-    var portada =
-        document.createElement("img");
 
-    portada.src =
-        album.portada_url;
+var portada =
+    document.createElement("img");
 
-    portada.alt =
-        album.titulo;
+portada.src =
+    album.portada_url;
 
-    tarjeta.appendChild(
-        portada
+portada.alt =
+    album.titulo;
+
+tarjeta.appendChild(
+    portada
+);
+
+
+}
+
+/* =================================================
+TÍTULO
+================================================= */
+
+var titulo =
+document.createElement("h3");
+
+titulo.textContent =
+album.titulo;
+
+tarjeta.appendChild(
+titulo
+);
+
+/* =================================================
+DESCRIPCIÓN
+================================================= */
+
+var descripcion =
+document.createElement("p");
+
+descripcion.textContent =
+album.descripcion ||
+"Sin descripción.";
+
+tarjeta.appendChild(
+descripcion
+);
+
+/* =================================================
+ESTADO
+================================================= */
+
+var estado =
+document.createElement("p");
+
+estado.className =
+"estado-compra";
+
+estado.textContent =
+"Compra aprobada";
+
+tarjeta.appendChild(
+estado
+);
+
+/* =================================================
+BOTÓN DESCARGAR
+================================================= */
+
+var boton =
+document.createElement("button");
+
+boton.className =
+"boton-descargar";
+
+boton.type =
+"button";
+
+boton.textContent =
+"Descargar álbum";
+
+boton.addEventListener(
+"click",
+function() {
+
+
+    descargarAlbum(
+        album.id
     );
 
 }
 
 
-/* =================================================
-   TÍTULO
-================================================= */
-
-var titulo =
-    document.createElement("h3");
-
-titulo.textContent =
-    album.titulo;
-
-tarjeta.appendChild(
-    titulo
-);
-
-
-/* =================================================
-   DESCRIPCIÓN
-================================================= */
-
-var descripcion =
-    document.createElement("p");
-
-descripcion.textContent =
-    album.descripcion ||
-    "Sin descripción.";
-
-tarjeta.appendChild(
-    descripcion
-);
-
-
-/* =================================================
-   ESTADO
-================================================= */
-
-var estado =
-    document.createElement("p");
-
-estado.className =
-    "estado-compra";
-
-estado.textContent =
-    "Compra aprobada";
-
-tarjeta.appendChild(
-    estado
-);
-
-
-/* =================================================
-   BOTÓN DESCARGAR
-================================================= */
-
-var boton =
-    document.createElement("button");
-
-boton.className =
-    "boton-descargar";
-
-boton.type =
-    "button";
-
-boton.textContent =
-    "Descargar álbum";
-
-boton.addEventListener(
-    "click",
-    function() {
-
-        descargarAlbum(
-            album.id
-        );
-
-    }
 );
 
 tarjeta.appendChild(
-    boton
+boton
 );
 
-
 /* =================================================
-   AGREGAR TARJETA
+AGREGAR TARJETA
 ================================================= */
 
 contenedor.appendChild(
-    tarjeta
+tarjeta
 );
 
 console.log(
-    "TARJETA DE BIBLIOTECA CREADA:",
-    album.id
+"TARJETA DE BIBLIOTECA CREADA:",
+album.id
 );
-
-
-}
 
 /* =====================================================
 DESCARGAR ÁLBUM
@@ -640,143 +649,149 @@ function descargarAlbum(
 albumId
 ) {
 
-
 console.log(
-    "DESCARGAR ÁLBUM:",
-    albumId
+"DESCARGAR ÁLBUM:",
+albumId
 );
 
 var solicitud =
-    new XMLHttpRequest();
+new XMLHttpRequest();
 
 solicitud.open(
-    "POST",
-    URL_SUPABASE +
-    "/functions/v1/descargar-album",
-    true
+"POST",
+URL_SUPABASE +
+"/functions/v1/descargar-album",
+true
 );
 
 solicitud.setRequestHeader(
-    "Content-Type",
-    "application/json"
+"Content-Type",
+"application/json"
 );
 
 solicitud.setRequestHeader(
-    "apikey",
-    KEY_SUPABASE
+"apikey",
+KEY_SUPABASE
 );
 
 solicitud.setRequestHeader(
-    "Authorization",
-    "Bearer " + token
+"Authorization",
+"Bearer " + token
 );
 
 solicitud.addEventListener(
-    "load",
-    function() {
+"load",
+function() {
 
-        console.log(
-            "RESPUESTA DESCARGA:",
-            solicitud.status
-        );
 
-        if (
-            solicitud.status !== 200
-        ) {
+    console.log(
+        "RESPUESTA DESCARGA:",
+        solicitud.status
+    );
 
-            var error;
+    if (
+        solicitud.status !== 200
+    ) {
 
-            try {
-
-                error =
-                    JSON.parse(
-                        solicitud.responseText
-                    );
-
-            } catch (e) {
-
-                error = {
-                    error:
-                        "No se pudo realizar la descarga."
-                };
-
-            }
-
-            alert(
-                error.error ||
-                "No se pudo realizar la descarga."
-            );
-
-            return;
-
-        }
-
-        var respuesta;
+        var error;
 
         try {
 
-            respuesta =
+            error =
                 JSON.parse(
                     solicitud.responseText
                 );
 
-        } catch (error) {
+        } catch (e) {
 
-            console.error(
-                "ERROR PARSEANDO DESCARGA:",
-                error
-            );
-
-            alert(
-                "Respuesta inválida del servidor."
-            );
-
-            return;
+            error = {
+                error:
+                    "No se pudo realizar la descarga."
+            };
 
         }
 
-        if (
-            !respuesta.download_url
-        ) {
-
-            alert(
-                "No se recibió la URL de descarga."
-            );
-
-            return;
-
-        }
-
-        console.log(
-            "URL DE DESCARGA RECIBIDA"
+        alert(
+            error.error ||
+            "No se pudo realizar la descarga."
         );
 
-        window.location.href =
-            respuesta.download_url;
+        return;
 
     }
-);
 
-solicitud.addEventListener(
-    "error",
-    function() {
+    var respuesta;
+
+    try {
+
+        respuesta =
+            JSON.parse(
+                solicitud.responseText
+            );
+
+    } catch (error) {
 
         console.error(
-            "ERROR DE CONEXIÓN CON DESCARGA"
+            "ERROR PARSEANDO DESCARGA:",
+            error
         );
 
         alert(
-            "No se pudo conectar con el servidor de descarga."
+            "Respuesta inválida del servidor."
         );
 
+        return;
+
     }
+
+    if (
+        !respuesta.download_url
+    ) {
+
+        alert(
+            "No se recibió la URL de descarga."
+        );
+
+        return;
+
+    }
+
+    console.log(
+        "URL DE DESCARGA RECIBIDA"
+    );
+
+    window.location.href =
+        respuesta.download_url;
+
+}
+```
+
+);
+
+solicitud.addEventListener(
+"error",
+function() {
+
+
+    console.error(
+        "ERROR DE CONEXIÓN CON DESCARGA"
+    );
+
+    alert(
+        "No se pudo conectar con el servidor de descarga."
+    );
+
+}
+
+
 );
 
 solicitud.send(
-    JSON.stringify({
-        album_id: albumId
-    })
+JSON.stringify({
+album_id: albumId
+})
 );
 
+}
 
 }
