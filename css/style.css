@@ -803,7 +803,7 @@ MÓVIL
 
 @media (max-width: 600px) {
 
-```
+
 .header-inner {
     gap: 15px;
 }
@@ -842,6 +842,7 @@ main {
     flex-direction: column;
 }
 
+
 /* ÁLBUMES EN MÓVIL */
 
 .albums .album-card {
@@ -874,11 +875,13 @@ main {
     font-size: 12px;
 }
 
+
 /* BIBLIOTECA */
 
 #biblioteca {
     grid-template-columns: 1fr;
 }
+
 
 /* ARTISTA */
 
@@ -886,6 +889,7 @@ main {
     flex-direction: column;
     text-align: center;
 }
+
 
 /* CARRITO */
 
